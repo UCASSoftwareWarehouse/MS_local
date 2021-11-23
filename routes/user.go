@@ -6,6 +6,6 @@ import (
 	"context"
 )
 
-func (s *MSLocalServer) AddUser(ctx context.Context, in *pb_gen.RegisterUserRequest) (*pb_gen.RegisterUserResponse, error) {
-	return User.AddUser(ctx, in)
+func (s *MSLocalServer) RegisterUser(ctx context.Context, in *pb_gen.RegisterUserRequest) (*pb_gen.RegisterUserResponse, error) {
+	return User.RegisterUser(ctx, in)
 }

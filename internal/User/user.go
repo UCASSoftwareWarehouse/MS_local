@@ -13,7 +13,7 @@ import (
 	"log"
 )
 
-func AddUser(ctx context.Context, req *pb_gen.RegisterUserRequest) (*pb_gen.RegisterUserResponse, error) {
+func RegisterUser(ctx context.Context, req *pb_gen.RegisterUserRequest) (*pb_gen.RegisterUserResponse, error) {
 	tmp_user := model.User{
 		UserName: req.Name,
 		Password: utils.Encrypt(req.Password),
