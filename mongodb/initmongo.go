@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+var Softwaredb *mongo.Database
+var BinaryCol *mongo.Collection
+var CodeCol *mongo.Collection
 
 func InitMongo() (*mongo.Database, error) {
 	var (
@@ -32,8 +35,18 @@ func InitMongo() (*mongo.Database, error) {
 		log.Fatal("ping error", err)
 	}
 	db := client.Database("Files")
+	Softwaredb = db
+	initCollection(db)
 	return db, err
 }
+
+func initCollection(DB *mongo.Database) {
+	bc := DB.Collection(config.BinaryCollection)
+	BinaryCol = bc
+	cc := DB.Collection(config.CodeCollection)
+	CodeCol = cc
+}
+
 func GetCollectionFromMongo(DB *mongo.Database, collectionName string) *mongo.Collection {
 	// 获取数据库和集合
 	collection := DB.Collection(collectionName)

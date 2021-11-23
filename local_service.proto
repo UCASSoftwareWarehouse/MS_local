@@ -1,0 +1,178 @@
+syntax = "proto3";
+package pb;
+import "google/protobuf/timestamp.proto";
+option go_package = "./pb_gen";
+service MSLocal {
+  rpc SayHello(HelloRequest) returns (HelloReply){}
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse){}
+  rpc GetUser(GetUserRequest) returns (GetUserResponse){}
+  rpc DeleteUser(DeleteUserRequest)returns(DeleteUserResponse){}
+  rpc UpdateUser(UpdateUserRequest) returns(UpdateUserResponse){}
+  //   rpc ChangePassword() returns(){}
+  rpc CreateProject(CreateProjectRequest) returns(CreateProjectResponse){}
+//  rpc UploadCode(stream UploadCodeRequest) returns(UploadCodeResponse){}
+//  rpc DownloadCode(DownloadCodeRequest) returns(stream DownladCodeResponse){}
+  rpc Upload(stream UploadRequest) returns(UploadResponse){}
+//  rpc Download(DownloadRequest) returns(DownloadResponse){}
+//  rpc SearchCode(SearchCodeRequest) returns(SearchCodeResponse){}
+}
+
+//message UserId{
+//  int64  id = 1;
+//}
+//message UserName{
+//  string name = 1;
+//}
+//message UserPassword{
+//  string password = 1;
+//}
+message User{
+  uint64 id = 1;
+  string name=2;
+  string password=3;
+}
+
+message RegisterUserRequest{
+//  uint64 id = 1;
+  string name = 1;
+  string password = 2;
+}
+
+message GetUserRequest{
+  uint64 id = 1;
+}
+
+message DeleteUserRequest{
+  uint64 id = 1;
+  string name = 2;
+  string password = 3;
+}
+
+message UpdateUserRequest{
+  User user = 1;
+  uint64 newId = 2;
+  string newName = 3;
+  string newPassword=4;
+}
+
+enum ResponseStatus{
+  unknown = 0;
+  ok = 1;
+  fail = 2;
+}
+message Error{
+  string message = 1;
+}
+message RegisterUserResponse{
+  User user = 1;
+  ResponseStatus status = 2;
+  string message = 3;
+//  Error error = 3;
+}
+
+message GetUserResponse{
+  User user = 1;
+  ResponseStatus status = 2;
+  string message = 3;
+//  Error error = 3;
+}
+
+message DeleteUserResponse{
+  ResponseStatus status = 1;
+  string message = 3;
+//  Error error = 2;
+}
+
+message UpdateUserResponse{
+  User user = 1;
+  ResponseStatus status = 2;
+  string message = 3;
+//  Error error = 3;
+}
+
+message Project{
+  uint64 id = 1;
+  string projectName = 2;
+  uint64 userId = 3;
+  string tags = 4;
+  string license = 5;
+  google.protobuf.Timestamp updatetime = 6;
+  string projectDescription =7;
+  string codeAddr = 8;
+  string binaryAddr = 9;
+}
+
+message CreateProjectRequest{
+//  uint64 id = 1;
+  string projectName = 1;
+  uint64 userId = 2;
+  string tags = 3;
+  string license = 4;
+//  google.protobuf.Timestamp Updatetime = 6;
+  string projectDescription =5;
+//  string CodeAddr = 8;
+//  string BinaryAddr = 9;
+}
+
+message CreateProjectResponse{
+  Project projectInfo = 1;
+  ResponseStatus status = 2;
+  string message = 3;
+}
+
+enum FileType{
+  codes = 0;
+  binary = 1;
+  code = 2;
+}
+
+message FileInfo{
+  string fileName = 1;
+  uint64 fileSize = 2;
+  google.protobuf.Timestamp updatetime = 3;
+}
+
+message UploadMetadata{
+  uint64 projectId = 1;
+  uint64 userId = 2;
+  string projectName = 3;
+  FileInfo fileInfo = 4;
+  FileType fileType = 5;
+}
+message UploadRequest{
+  oneof data{
+    UploadMetadata metadata = 1;
+    bytes content = 2;//using chunks
+  }
+}
+message UploadResponse{
+  Project projectInfo = 1;
+  ResponseStatus status = 2;
+  string message = 3;
+}
+
+//message DownloadRequest{
+//
+//
+//}
+//
+//message DownloadResponse{
+//
+//}
+//message UserRegisterResponse{
+//   User registeredUser=1;
+//   Error error =2;
+//}
+//
+//message Error{
+//   string code = 1;
+//   string message = 2;
+//}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}

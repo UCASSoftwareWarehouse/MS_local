@@ -9,7 +9,7 @@ type Binary struct {
 	FileName  string             `json:"file_name" bson:"file_name"`
 	ProjectID uint64             `json:"project_id" bson:"project_id"`
 	//FileType   int                  `json:"file_type" bson:"file_type"`
-	FileSize   int                 `json:"file_size" bson:"file_size"`
+	FileSize   uint64              `json:"file_size" bson:"file_size"`
 	UpdateTime primitive.Timestamp `json:"update_time" bson:"update_time"`
 	Content    []byte              `json:"content,omitempty" bson:"content,omitempty"`
 	//ChildFiles []primitive.ObjectID `json:"child_files,omitempty" bson:"child_files,omitempty"`

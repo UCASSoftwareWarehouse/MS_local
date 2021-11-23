@@ -11,8 +11,8 @@ type Code struct {
 	FileID     primitive.ObjectID   `json:"file_id" bson:"_id,omitempty"`
 	FileName   string               `json:"file_name" bson:"file_name"`
 	ProjectID  uint64               `json:"project_id" bson:"project_id"`
-	FileType   int                  `json:"file_type" bson:"file_type"`
-	FileSize   int64                `json:"file_size" bson:"file_size"`
+	FileType   int                  `json:"file_type" bson:"file_type"` //0 dir, 1 files
+	FileSize   uint64               `json:"file_size" bson:"file_size"`
 	Content    []byte               `json:"content,omitempty" bson:"content,omitempty"`
 	UpdateTime primitive.Timestamp  `json:"update_time" bson:"update_time"`
 	ChildFiles []primitive.ObjectID `json:"child_files,omitempty" bson:"child_files,omitempty"`

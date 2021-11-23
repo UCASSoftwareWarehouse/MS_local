@@ -11,12 +11,12 @@ import (
 	"log"
 )
 
-func AddBinary(collection *mongo.Collection, binary model.Binary) (interface{}, error) {
+func AddBinary(collection *mongo.Collection, binary model.Binary) (primitive.ObjectID, error) {
 	insertResult, err := collection.InsertOne(context.TODO(), mongodb.Struct2Bson(binary))
 	if err != nil {
 		log.Printf("add binary error, err=[%v]", err)
 	}
-	return insertResult.InsertedID, err
+	return insertResult.InsertedID.(primitive.ObjectID), err
 }
 func AddBinarys(collection *mongo.Collection, binarys []model.Binary) ([]interface{}, error) {
 	var binarys_i []interface{}

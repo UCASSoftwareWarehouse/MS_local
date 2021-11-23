@@ -11,12 +11,12 @@ import (
 	"log"
 )
 
-func AddCode(collection *mongo.Collection, code model.Code) (interface{}, error) {
+func AddCode(collection *mongo.Collection, code model.Code) (primitive.ObjectID, error) {
 	insertResult, err := collection.InsertOne(context.TODO(), mongodb.Struct2Bson(code)) //insert为interface类型
 	if err != nil {
 		log.Printf("add code error, err = [%v]", err)
 	}
-	return insertResult.InsertedID, err
+	return insertResult.InsertedID.(primitive.ObjectID), err
 }
 
 func AddCodes(collection *mongo.Collection, codes []model.Code) ([]interface{}, error) {
