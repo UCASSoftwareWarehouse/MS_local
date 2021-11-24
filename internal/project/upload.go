@@ -12,10 +12,7 @@ import (
 	"MS_Local/pb_gen"
 	"MS_Local/utils"
 	mongodb2 "MS_Local/utils/mongodb"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"os"
@@ -32,38 +29,62 @@ type Uploader struct {
 }
 
 func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
+	res := &pb_gen.UploadResponse{
+		ProjectInfo: nil,
+		Status:      pb_gen.ResponseStatus_fail,
+		Message:     "fail",
+	}
 	req, err := stream.Recv()
 	if err != nil {
-		return status.Errorf(codes.Unknown, "cannot receive project info")
+		res.Message = "cannot receive project info"
+		log.Printf(res.GetMessage())
+		stream.SendAndClose(res)
+		return err
 	}
 	metadata := req.GetMetadata()
 	fpath, err := u.receiveStream(stream, metadata)
 	if err != nil {
-		log.Printf("upload chunk, failed receive stream")
+		res.Message = "upload chunk, failed receive stream"
+		log.Printf(res.GetMessage())
+		stream.SendAndClose(res)
 		return err
 	}
 
 	if metadata.GetFileType() == pb_gen.FileType_binary {
-		log.Printf("receive %d's project %s", metadata.GetProjectId(), metadata.ProjectName)
-		u.SaveBinary(fpath, metadata)
+		log.Printf("receive %d's project %s", metadata.UserId, metadata.ProjectId)
+		err = u.SaveBinary(fpath, metadata)
 	} else if metadata.GetFileType() == pb_gen.FileType_codes {
-		log.Printf("receive %d's project %s", metadata.GetProjectId(), metadata.ProjectName)
-		u.SaveCodes(fpath, metadata)
+		log.Printf("receive %d's project %s", metadata.UserId, metadata.ProjectId)
+		err = u.SaveCodes(fpath, metadata)
 	}
-	os.Remove(fpath)
+	if err != nil {
+		res.Message = "save to database failed"
+		log.Printf(res.GetMessage())
+		stream.SendAndClose(res)
+		return err
+	}
+	if fpath != "" {
+		os.Remove(fpath)
+	}
+	res.Status = pb_gen.ResponseStatus_ok
+	res.Message = "success"
+
+	err = stream.SendAndClose(res)
+	if err != nil {
+		log.Printf("cannot send response: err=[%v]", err)
+		return err
+	}
+	log.Printf("doupload finished.")
 	return nil
 }
 
 func (u *Uploader) receiveStream(stream pb_gen.MSLocal_UploadServer, metadata *pb_gen.UploadMetadata) (string, error) {
-	fileInfo := metadata.GetFileInfo()
-	fo, err := os.CreateTemp(config.TempFilePath, fmt.Sprintf("temp_%s", fileInfo.GetFileName()))
+	//fileInfo := metadata.GetFileInfo()
+	//log.Printf("file info %v", fileInfo)
+	//fo, err := os.CreateTemp(config.TempFilePath, fmt.Sprintf("temp_%s", fileInfo.GetFileName()))
+	fo, err := os.CreateTemp(config.TempFilePath, "temp_")
 	if err != nil {
 		log.Printf("create temp file fail, err=[%v]", err)
-		stream.SendAndClose(&pb_gen.UploadResponse{
-			ProjectInfo: nil,
-			Status:      pb_gen.ResponseStatus_fail,
-			Message:     "upload failed",
-		})
 		return "", err
 	}
 	defer func() {
@@ -80,11 +101,6 @@ func (u *Uploader) receiveStream(stream pb_gen.MSLocal_UploadServer, metadata *p
 		}
 		if err != nil {
 			log.Printf("receive chunk failed, error=[%v]", err)
-			stream.SendAndClose(&pb_gen.UploadResponse{
-				ProjectInfo: nil,
-				Status:      pb_gen.ResponseStatus_fail,
-				Message:     "upload failed",
-			})
 			return "", err
 		}
 		chunk := req.GetContent()
@@ -92,16 +108,12 @@ func (u *Uploader) receiveStream(stream pb_gen.MSLocal_UploadServer, metadata *p
 		_, err = fo.Write(chunk)
 		if err != nil {
 			log.Printf("cannot write chunk data: err=[%v]", err)
-			stream.SendAndClose(&pb_gen.UploadResponse{
-				ProjectInfo: nil,
-				Status:      pb_gen.ResponseStatus_fail,
-				Message:     "upload failed",
-			})
 			return "", err
 		}
 	}
-	fpath := filepath.Join(config.TempFilePath, fo.Name())
-	return fpath, nil
+	//fpath := filepath.Join(config.TempFilePath, fo.Name())
+	//return fpath, nil
+	return fo.Name(), nil //name is path
 }
 
 //文件名必须，创建时间和大小似乎无所谓,不如保存上传时间
@@ -114,11 +126,10 @@ func (u *Uploader) SaveBinary(fpath string, metadata *pb_gen.UploadMetadata) err
 	}
 	//update project
 	_, err = project.UpdateProject(mysql.Mysql, metadata.GetProjectId(), map[string]interface{}{model2.ProjectColumns.BinaryAddr: mongodb2.ObjectId2String(*binary_id)})
-	log.Print("update project binary address success!")
 	if err != nil {
-		//log.Printf("add binary to database failed: %v", err)
 		return err
 	}
+	log.Print("update project binary address success!")
 	return nil
 }
 

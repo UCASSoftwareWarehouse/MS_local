@@ -2,19 +2,16 @@ package project
 
 import (
 	"MS_Local/pb_gen"
+	"MS_Local/server"
 	"context"
-	"google.golang.org/grpc"
 	"log"
 	"testing"
 )
 
 func TestCreateProject(t *testing.T) {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("err=[%v]", err)
-	}
-	defer conn.Close()
+	conn := server.InitMSLocalClient()
 	cli := pb_gen.NewMSLocalClient(conn)
+	defer conn.Close()
 
 	//test create project
 	res1, err := cli.CreateProject(context.Background(), &pb_gen.CreateProjectRequest{

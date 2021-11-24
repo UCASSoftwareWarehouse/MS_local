@@ -17,7 +17,8 @@ func AddProject(db *gorm.DB, project model.Project) (uint64, error) {
 
 func UpdateProject(db *gorm.DB, projectId uint64, options map[string]interface{}) (model.Project, error) {
 	project, _ := GetProjectById(db, projectId)
-	err := db.Model(&project).Updates(options).Error
+	//err := db.Model(&project).Updates(options).Error
+	err := db.Model(&model.Project{}).Where("ID = ?", projectId).Updates(options).Error
 	if err != nil {
 		log.Printf("Update project failed, err=%v", err)
 	}

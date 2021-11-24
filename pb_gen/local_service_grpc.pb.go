@@ -25,9 +25,8 @@ type MSLocalClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	//   rpc ChangePassword() returns(){}
 	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error)
-	//  rpc UploadCode(stream UploadCodeRequest) returns(UploadCodeResponse){}
-	//  rpc DownloadCode(DownloadCodeRequest) returns(stream DownladCodeResponse){}
 	Upload(ctx context.Context, opts ...grpc.CallOption) (MSLocal_UploadClient, error)
+	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (MSLocal_DownloadClient, error)
 }
 
 type mSLocalClient struct {
@@ -126,6 +125,38 @@ func (x *mSLocalUploadClient) CloseAndRecv() (*UploadResponse, error) {
 	return m, nil
 }
 
+func (c *mSLocalClient) Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (MSLocal_DownloadClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[1], "/pb.MSLocal/Download", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &mSLocalDownloadClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MSLocal_DownloadClient interface {
+	Recv() (*DownloadResponse, error)
+	grpc.ClientStream
+}
+
+type mSLocalDownloadClient struct {
+	grpc.ClientStream
+}
+
+func (x *mSLocalDownloadClient) Recv() (*DownloadResponse, error) {
+	m := new(DownloadResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MSLocalServer is the server API for MSLocal service.
 // All implementations must embed UnimplementedMSLocalServer
 // for forward compatibility
@@ -137,9 +168,8 @@ type MSLocalServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	//   rpc ChangePassword() returns(){}
 	CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error)
-	//  rpc UploadCode(stream UploadCodeRequest) returns(UploadCodeResponse){}
-	//  rpc DownloadCode(DownloadCodeRequest) returns(stream DownladCodeResponse){}
 	Upload(MSLocal_UploadServer) error
+	Download(*DownloadRequest, MSLocal_DownloadServer) error
 	mustEmbedUnimplementedMSLocalServer()
 }
 
@@ -167,6 +197,9 @@ func (UnimplementedMSLocalServer) CreateProject(context.Context, *CreateProjectR
 }
 func (UnimplementedMSLocalServer) Upload(MSLocal_UploadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Upload not implemented")
+}
+func (UnimplementedMSLocalServer) Download(*DownloadRequest, MSLocal_DownloadServer) error {
+	return status.Errorf(codes.Unimplemented, "method Download not implemented")
 }
 func (UnimplementedMSLocalServer) mustEmbedUnimplementedMSLocalServer() {}
 
@@ -315,6 +348,27 @@ func (x *mSLocalUploadServer) Recv() (*UploadRequest, error) {
 	return m, nil
 }
 
+func _MSLocal_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DownloadRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MSLocalServer).Download(m, &mSLocalDownloadServer{stream})
+}
+
+type MSLocal_DownloadServer interface {
+	Send(*DownloadResponse) error
+	grpc.ServerStream
+}
+
+type mSLocalDownloadServer struct {
+	grpc.ServerStream
+}
+
+func (x *mSLocalDownloadServer) Send(m *DownloadResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // MSLocal_ServiceDesc is the grpc.ServiceDesc for MSLocal service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -352,6 +406,11 @@ var MSLocal_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Upload",
 			Handler:       _MSLocal_Upload_Handler,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "Download",
+			Handler:       _MSLocal_Download_Handler,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "local_service.proto",
