@@ -152,7 +152,7 @@ message UploadResponse{
 
 
 message DownloadRequest{
-  uint64 projectId = 1;
+  string fileId = 1;
   uint64 userId = 2;
   FileType fileType = 3;
 }

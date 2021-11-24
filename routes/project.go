@@ -13,3 +13,7 @@ func (s *MSLocalServer) CreateProject(ctx context.Context, req *pb_gen.CreatePro
 func (s *MSLocalServer) Upload(stream pb_gen.MSLocal_UploadServer) error {
 	return project.Upload(stream)
 }
+
+func (s *MSLocalServer) Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer) error {
+	return project.Download(req, stream)
+}

@@ -12,6 +12,7 @@ import (
 	"MS_Local/pb_gen"
 	"MS_Local/utils"
 	mongodb2 "MS_Local/utils/mongodb"
+	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"io"
 	"log"
@@ -51,10 +52,10 @@ func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
 	}
 
 	if metadata.GetFileType() == pb_gen.FileType_binary {
-		log.Printf("receive %d's project %s", metadata.UserId, metadata.ProjectId)
+		log.Printf("receive %d's project %d", metadata.UserId, metadata.ProjectId)
 		err = u.SaveBinary(fpath, metadata)
 	} else if metadata.GetFileType() == pb_gen.FileType_codes {
-		log.Printf("receive %d's project %s", metadata.UserId, metadata.ProjectId)
+		log.Printf("receive %d's project %d", metadata.UserId, metadata.ProjectId)
 		err = u.SaveCodes(fpath, metadata)
 	}
 	if err != nil {
@@ -82,7 +83,7 @@ func (u *Uploader) receiveStream(stream pb_gen.MSLocal_UploadServer, metadata *p
 	//fileInfo := metadata.GetFileInfo()
 	//log.Printf("file info %v", fileInfo)
 	//fo, err := os.CreateTemp(config.TempFilePath, fmt.Sprintf("temp_%s", fileInfo.GetFileName()))
-	fo, err := os.CreateTemp(config.TempFilePath, "temp_")
+	fo, err := os.CreateTemp(config.TempFilePath, "temp_upload_")
 	if err != nil {
 		log.Printf("create temp file fail, err=[%v]", err)
 		return "", err
@@ -125,7 +126,7 @@ func (u *Uploader) SaveBinary(fpath string, metadata *pb_gen.UploadMetadata) err
 		return err
 	}
 	//update project
-	_, err = project.UpdateProject(mysql.Mysql, metadata.GetProjectId(), map[string]interface{}{model2.ProjectColumns.BinaryAddr: mongodb2.ObjectId2String(*binary_id)})
+	err = project.UpdateProject(mysql.Mysql, metadata.GetProjectId(), map[string]interface{}{model2.ProjectColumns.BinaryAddr: mongodb2.ObjectId2String(*binary_id)})
 	if err != nil {
 		return err
 	}
@@ -138,7 +139,7 @@ func (u *Uploader) SaveCodes(fpath string, metadata *pb_gen.UploadMetadata) erro
 	//temp := fmt.Sprintf("extracted_%d", time.Now().UnixNano())
 	//tempDir, err := os.MkdirTemp(config.TempFilePath, fmt.Sprintf("extracted_%d", time.Now().UnixNano()))
 	//tempDir, err := os.MkdirTemp(config.TempFilePath, temp)
-	tempDir, err := os.MkdirTemp(config.TempFilePath, "extracted_")
+	tempDir, err := os.MkdirTemp(config.TempFilePath, "extracted_upload")
 	if err != nil {
 		log.Printf("create temp dir error, err=%v", err)
 		return err
@@ -159,7 +160,7 @@ func (u *Uploader) SaveCodes(fpath string, metadata *pb_gen.UploadMetadata) erro
 		return err
 	}
 	//update project
-	_, err = project.UpdateProject(mysql.Mysql, metadata.GetProjectId(), map[string]interface{}{model2.ProjectColumns.CodeAddr: mongodb2.ObjectId2String(*code_id)})
+	err = project.UpdateProject(mysql.Mysql, metadata.GetProjectId(), map[string]interface{}{model2.ProjectColumns.CodeAddr: mongodb2.ObjectId2String(*code_id)})
 	log.Print("update project codes address success!")
 	if err != nil {
 		log.Printf("add binary to database failed: %v", err)
@@ -189,7 +190,7 @@ func (u *Uploader) SaveDir(dirpath string, metadata *pb_gen.UploadMetadata) (*pr
 		childFiles = append(childFiles, *cid)
 	}
 
-	temp_pid, err := code.AddCode(mongodb.CodeCol, model.Code{
+	temp_pid, err := code.AddCode(context.Background(), mongodb.CodeCol, &model.Code{
 		FileName:   dinfo.Name(),
 		ProjectID:  metadata.ProjectId,
 		FileType:   0, //dir
@@ -202,7 +203,7 @@ func (u *Uploader) SaveDir(dirpath string, metadata *pb_gen.UploadMetadata) (*pr
 		return nil, err
 	}
 	log.Printf("save dir(%s) to mongodb success!", dinfo.Name())
-	return &temp_pid, nil
+	return temp_pid, nil
 }
 
 // save binary/code file to mongodb
@@ -213,23 +214,24 @@ func (u *Uploader) SaveFile(fpath string, metadata *pb_gen.UploadMetadata, filet
 		return nil, err
 	}
 	finfo, _ := os.Stat(fpath)
-	var temp_id primitive.ObjectID
+	var temp_id *primitive.ObjectID
 	if filetype == pb_gen.FileType_binary {
 		//binary　时间来自于包而不是来自于临时文件
+		bfile := new(model.Binary)
+
 		binfo := metadata.GetFileInfo() // binary file info come from request
-		temp_id, err = binary.AddBinary(mongodb.BinaryCol, model.Binary{
-			FileName:  binfo.FileName,
-			ProjectID: metadata.ProjectId,
-			FileSize:  binfo.FileSize,
-			UpdateTime: primitive.Timestamp{
-				T: uint32(binfo.Updatetime.Seconds),
-				I: uint32(binfo.Updatetime.Nanos),
-			},
-			Content: content,
-		})
+		bfile.FileName = binfo.FileName
+		bfile.ProjectID = metadata.ProjectId
+		bfile.FileSize = binfo.FileSize
+		bfile.UpdateTime = primitive.Timestamp{
+			T: uint32(binfo.Updatetime.Seconds),
+			I: uint32(binfo.Updatetime.Nanos),
+		}
+		bfile.Content = content
+		temp_id, err = binary.AddBinary(context.Background(), mongodb.BinaryCol, bfile)
 	} else if filetype == pb_gen.FileType_code {
 		//code file info come from file itself
-		temp_id, err = code.AddCode(mongodb.CodeCol, model.Code{
+		temp_id, err = code.AddCode(context.Background(), mongodb.CodeCol, &model.Code{
 			FileName:   finfo.Name(),
 			ProjectID:  metadata.ProjectId,
 			FileSize:   uint64(finfo.Size()),
@@ -245,5 +247,5 @@ func (u *Uploader) SaveFile(fpath string, metadata *pb_gen.UploadMetadata, filet
 	}
 	log.Printf("add file(%s) to mongodb success", finfo.Name())
 
-	return &temp_id, nil
+	return temp_id, nil
 }

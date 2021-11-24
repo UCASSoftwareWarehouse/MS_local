@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"MS_Local/config"
 	"archive/zip"
 	"fmt"
 	"google.golang.org/grpc/codes"
@@ -9,55 +10,60 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // Zip srcFile could be a single file or a directory
-func Zip(srcFile string, destZip string) error {
-	zipfile, err := os.Create(destZip)
+func Zip(srcFile string, destZip string) (string, error) {
+	var zipfile *os.File
+	var err error
+	if destZip == "" {
+		zipfile, err = os.CreateTemp(config.TempFilePath, "dzip_")
+	} else {
+		zipfile, err = os.Create(destZip)
+	}
+
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer zipfile.Close()
 
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	filepath.Walk(srcFile, func(path string, info os.FileInfo, err error) error {
+	walker := func(path string, info os.FileInfo, err error) error {
+		fmt.Printf("Crawling: %#v\n", path)
 		if err != nil {
 			return err
 		}
-
-		header, err := zip.FileInfoHeader(info)
-		if err != nil {
-			return err
-		}
-
-		header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile)+"/")
-		// header.Name = path
 		if info.IsDir() {
-			header.Name += "/"
-		} else {
-			header.Method = zip.Deflate
+			return nil
 		}
+		file, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
 
-		writer, err := archive.CreateHeader(header)
+		// Ensure that `path` is not absolute; it should not start with "/".
+		// This snippet happens to work because I don't use
+		// absolute paths, but ensure your real-world code
+		// transforms path into a zip-root relative path.
+		rpath, _ := filepath.Rel(srcFile, path)
+		f, err := archive.Create(rpath)
 		if err != nil {
 			return err
 		}
 
-		if !info.IsDir() {
-			file, err := os.Open(path)
-			if err != nil {
-				return err
-			}
-			defer file.Close()
-			_, err = io.Copy(writer, file)
+		_, err = io.Copy(f, file)
+		if err != nil {
+			return err
 		}
-		return err
-	})
 
-	return err
+		return nil
+	}
+	err = filepath.Walk(srcFile, walker)
+
+	return zipfile.Name(), err
 }
 
 func Unzip(zipFile string, destDir string) (string, error) {

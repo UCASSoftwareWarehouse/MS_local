@@ -6,7 +6,6 @@ import (
 	"MS_Local/utils/mongodb"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 	"testing"
 	"time"
 )
@@ -34,11 +33,10 @@ func TestUpdateProject(t *testing.T) {
 	temp_id := primitive.NewObjectID()
 	string_id := mongodb.ObjectId2String(temp_id)
 
-	project, err := UpdateProject(db, 1, map[string]interface{}{model.ProjectColumns.BinaryAddr: string_id})
+	err := UpdateProject(db, 1, map[string]interface{}{model.ProjectColumns.BinaryAddr: string_id})
 	if err != nil {
 		t.Errorf("update object id error: %v", err)
 	}
-	log.Println(project)
 }
 
 func TestGetProjectsByUserId(t *testing.T) {

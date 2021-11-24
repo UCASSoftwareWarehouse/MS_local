@@ -15,14 +15,15 @@ func AddProject(db *gorm.DB, project model.Project) (uint64, error) {
 	return project.ID, err
 }
 
-func UpdateProject(db *gorm.DB, projectId uint64, options map[string]interface{}) (model.Project, error) {
-	project, _ := GetProjectById(db, projectId)
+func UpdateProject(db *gorm.DB, projectId uint64, options map[string]interface{}) error {
+	//project, _ := GetProjectById(db, projectId)
 	//err := db.Model(&project).Updates(options).Error
 	err := db.Model(&model.Project{}).Where("ID = ?", projectId).Updates(options).Error
 	if err != nil {
 		log.Printf("Update project failed, err=%v", err)
 	}
-	return project, err
+
+	return err
 }
 
 // get all software project
@@ -36,13 +37,14 @@ func GetAllMetadata(db *gorm.DB) ([]model.Project, error) {
 }
 
 // get softmatadata by primary key projectid
-func GetProjectById(db *gorm.DB, projectId uint64) (model.Project, error) {
+func GetProjectById(db *gorm.DB, projectId uint64) (*model.Project, error) {
 	project := new(model.Project)
 	err := db.Where("ID = ?", projectId).First(project).Error
 	if err != nil {
 		log.Printf("get project by project id error, err=[%v]", err)
+		return nil, err
 	}
-	return *project, err
+	return project, err
 }
 
 // Get all software project by user id

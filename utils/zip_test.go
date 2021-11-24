@@ -23,8 +23,9 @@ func TestUnzip(t *testing.T) {
 }
 
 func TestZip(t *testing.T) {
-	err := Zip("D:\\GolangProjects\\src\\test\\wlx-beego-demo-develop", "D:\\GolangProjects\\src\\test\\wlx-beego-demo-develop.zip")
+	fpath, err := Zip("D:\\GolangProjects\\src\\test\\MS_RemoteCode-master", "D:\\GolangProjects\\src\\test\\MS_RemoteCode-master.zip")
 	if err != nil {
 		t.Errorf("unzip failed, err=%v", err)
 	}
+	log.Printf(fpath)
 }
