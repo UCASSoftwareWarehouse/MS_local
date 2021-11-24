@@ -72,7 +72,7 @@ func (cli *LocalClient) Upload(uid uint64, pid uint64, fpath string, fileType pb
 			break
 		}
 		if err != nil {
-			log.Fatal("cannot read chunk to buffer: ", err)
+			log.Printf("cannot read chunk to buffer: ", err)
 			return err
 		}
 		req := &pb_gen.UploadRequest{
