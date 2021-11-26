@@ -6,6 +6,7 @@ import (
 	"MS_Local/utils/mongodb"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log"
 	"testing"
 	"time"
 )
@@ -50,11 +51,11 @@ func TestGetProjectsByUserId(t *testing.T) {
 
 func TestGetProjectById(t *testing.T) {
 	db, _ := mysql.InitMysql()
-	projects, err := GetProjectById(db, 1)
+	project, err := GetProjectById(db, 7)
 	if err != nil {
 		t.Errorf("get project by options error：%s", err)
 	}
-	fmt.Println(projects)
+	fmt.Println(project)
 }
 func TestGetProjectsByOptions(t *testing.T) {
 	db, _ := mysql.InitMysql()
@@ -87,4 +88,13 @@ func TestDeleteProjectById(t *testing.T) {
 	if err != nil {
 		t.Errorf("delete project by id failed：%s", err)
 	}
+}
+
+func TestSearchProjectByName(t *testing.T) {
+	db, _ := mysql.InitMysql()
+	projects, err := SearchProjectByName(db, "roje")
+	if err != nil {
+		t.Error(err)
+	}
+	log.Println(len(projects))
 }

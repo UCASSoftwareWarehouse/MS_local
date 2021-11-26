@@ -122,15 +122,250 @@ func (FileType) EnumDescriptor() ([]byte, []int) {
 	return file_local_service_proto_rawDescGZIP(), []int{1}
 }
 
-//message UserId{
-//  int64  id = 1;
-//}
-//message UserName{
-//  string name = 1;
-//}
-//message UserPassword{
-//  string password = 1;
-//}
+type SearchProjectRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Page    uint32 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Limit   uint32 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	KeyWord string `protobuf:"bytes,3,opt,name=keyWord,proto3" json:"keyWord,omitempty"`
+}
+
+func (x *SearchProjectRequest) Reset() {
+	*x = SearchProjectRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_local_service_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SearchProjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchProjectRequest) ProtoMessage() {}
+
+func (x *SearchProjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_local_service_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchProjectRequest.ProtoReflect.Descriptor instead.
+func (*SearchProjectRequest) Descriptor() ([]byte, []int) {
+	return file_local_service_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SearchProjectRequest) GetPage() uint32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *SearchProjectRequest) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *SearchProjectRequest) GetKeyWord() string {
+	if x != nil {
+		return x.KeyWord
+	}
+	return ""
+}
+
+type SearchProjectResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ProjectInfo *Project       `protobuf:"bytes,1,opt,name=projectInfo,proto3" json:"projectInfo,omitempty"`
+	Status      ResponseStatus `protobuf:"varint,2,opt,name=status,proto3,enum=pb.ResponseStatus" json:"status,omitempty"`
+	Message     string         `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *SearchProjectResponse) Reset() {
+	*x = SearchProjectResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_local_service_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SearchProjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchProjectResponse) ProtoMessage() {}
+
+func (x *SearchProjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_local_service_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchProjectResponse.ProtoReflect.Descriptor instead.
+func (*SearchProjectResponse) Descriptor() ([]byte, []int) {
+	return file_local_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SearchProjectResponse) GetProjectInfo() *Project {
+	if x != nil {
+		return x.ProjectInfo
+	}
+	return nil
+}
+
+func (x *SearchProjectResponse) GetStatus() ResponseStatus {
+	if x != nil {
+		return x.Status
+	}
+	return ResponseStatus_unknown
+}
+
+func (x *SearchProjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type DeleteProjectRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pid      uint64   `protobuf:"varint,1,opt,name=pid,proto3" json:"pid,omitempty"`
+	Uid      uint64   `protobuf:"varint,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	FileType FileType `protobuf:"varint,3,opt,name=fileType,proto3,enum=pb.FileType" json:"fileType,omitempty"`
+}
+
+func (x *DeleteProjectRequest) Reset() {
+	*x = DeleteProjectRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_local_service_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteProjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteProjectRequest) ProtoMessage() {}
+
+func (x *DeleteProjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_local_service_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteProjectRequest.ProtoReflect.Descriptor instead.
+func (*DeleteProjectRequest) Descriptor() ([]byte, []int) {
+	return file_local_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DeleteProjectRequest) GetPid() uint64 {
+	if x != nil {
+		return x.Pid
+	}
+	return 0
+}
+
+func (x *DeleteProjectRequest) GetUid() uint64 {
+	if x != nil {
+		return x.Uid
+	}
+	return 0
+}
+
+func (x *DeleteProjectRequest) GetFileType() FileType {
+	if x != nil {
+		return x.FileType
+	}
+	return FileType_project
+}
+
+type DeleteProjectResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Status  ResponseStatus `protobuf:"varint,1,opt,name=status,proto3,enum=pb.ResponseStatus" json:"status,omitempty"`
+	Message string         `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *DeleteProjectResponse) Reset() {
+	*x = DeleteProjectResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_local_service_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteProjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteProjectResponse) ProtoMessage() {}
+
+func (x *DeleteProjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_local_service_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteProjectResponse.ProtoReflect.Descriptor instead.
+func (*DeleteProjectResponse) Descriptor() ([]byte, []int) {
+	return file_local_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DeleteProjectResponse) GetStatus() ResponseStatus {
+	if x != nil {
+		return x.Status
+	}
+	return ResponseStatus_unknown
+}
+
+func (x *DeleteProjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type User struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -144,7 +379,7 @@ type User struct {
 func (x *User) Reset() {
 	*x = User{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[0]
+		mi := &file_local_service_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -157,7 +392,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[0]
+	mi := &file_local_service_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -170,7 +405,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{0}
+	return file_local_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *User) GetId() uint64 {
@@ -207,7 +442,7 @@ type RegisterUserRequest struct {
 func (x *RegisterUserRequest) Reset() {
 	*x = RegisterUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[1]
+		mi := &file_local_service_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -220,7 +455,7 @@ func (x *RegisterUserRequest) String() string {
 func (*RegisterUserRequest) ProtoMessage() {}
 
 func (x *RegisterUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[1]
+	mi := &file_local_service_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -233,7 +468,7 @@ func (x *RegisterUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterUserRequest.ProtoReflect.Descriptor instead.
 func (*RegisterUserRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{1}
+	return file_local_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *RegisterUserRequest) GetName() string {
@@ -261,7 +496,7 @@ type GetUserRequest struct {
 func (x *GetUserRequest) Reset() {
 	*x = GetUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[2]
+		mi := &file_local_service_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -274,7 +509,7 @@ func (x *GetUserRequest) String() string {
 func (*GetUserRequest) ProtoMessage() {}
 
 func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[2]
+	mi := &file_local_service_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -287,7 +522,7 @@ func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
 func (*GetUserRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{2}
+	return file_local_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetUserRequest) GetId() uint64 {
@@ -310,7 +545,7 @@ type DeleteUserRequest struct {
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[3]
+		mi := &file_local_service_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -323,7 +558,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[3]
+	mi := &file_local_service_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -336,7 +571,7 @@ func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{3}
+	return file_local_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DeleteUserRequest) GetId() uint64 {
@@ -374,7 +609,7 @@ type UpdateUserRequest struct {
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[4]
+		mi := &file_local_service_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -387,7 +622,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[4]
+	mi := &file_local_service_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -400,7 +635,7 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{4}
+	return file_local_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateUserRequest) GetUser() *User {
@@ -442,7 +677,7 @@ type Error struct {
 func (x *Error) Reset() {
 	*x = Error{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[5]
+		mi := &file_local_service_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -455,7 +690,7 @@ func (x *Error) String() string {
 func (*Error) ProtoMessage() {}
 
 func (x *Error) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[5]
+	mi := &file_local_service_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -468,7 +703,7 @@ func (x *Error) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Error.ProtoReflect.Descriptor instead.
 func (*Error) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{5}
+	return file_local_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Error) GetMessage() string {
@@ -491,7 +726,7 @@ type RegisterUserResponse struct {
 func (x *RegisterUserResponse) Reset() {
 	*x = RegisterUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[6]
+		mi := &file_local_service_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -504,7 +739,7 @@ func (x *RegisterUserResponse) String() string {
 func (*RegisterUserResponse) ProtoMessage() {}
 
 func (x *RegisterUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[6]
+	mi := &file_local_service_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -517,7 +752,7 @@ func (x *RegisterUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterUserResponse.ProtoReflect.Descriptor instead.
 func (*RegisterUserResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{6}
+	return file_local_service_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RegisterUserResponse) GetUser() *User {
@@ -554,7 +789,7 @@ type GetUserResponse struct {
 func (x *GetUserResponse) Reset() {
 	*x = GetUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[7]
+		mi := &file_local_service_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -567,7 +802,7 @@ func (x *GetUserResponse) String() string {
 func (*GetUserResponse) ProtoMessage() {}
 
 func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[7]
+	mi := &file_local_service_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -580,7 +815,7 @@ func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserResponse.ProtoReflect.Descriptor instead.
 func (*GetUserResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{7}
+	return file_local_service_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetUserResponse) GetUser() *User {
@@ -616,7 +851,7 @@ type DeleteUserResponse struct {
 func (x *DeleteUserResponse) Reset() {
 	*x = DeleteUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[8]
+		mi := &file_local_service_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -629,7 +864,7 @@ func (x *DeleteUserResponse) String() string {
 func (*DeleteUserResponse) ProtoMessage() {}
 
 func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[8]
+	mi := &file_local_service_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -642,7 +877,7 @@ func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserResponse.ProtoReflect.Descriptor instead.
 func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{8}
+	return file_local_service_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteUserResponse) GetStatus() ResponseStatus {
@@ -672,7 +907,7 @@ type UpdateUserResponse struct {
 func (x *UpdateUserResponse) Reset() {
 	*x = UpdateUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[9]
+		mi := &file_local_service_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -685,7 +920,7 @@ func (x *UpdateUserResponse) String() string {
 func (*UpdateUserResponse) ProtoMessage() {}
 
 func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[9]
+	mi := &file_local_service_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -698,7 +933,7 @@ func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserResponse.ProtoReflect.Descriptor instead.
 func (*UpdateUserResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{9}
+	return file_local_service_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UpdateUserResponse) GetUser() *User {
@@ -741,7 +976,7 @@ type Project struct {
 func (x *Project) Reset() {
 	*x = Project{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[10]
+		mi := &file_local_service_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -754,7 +989,7 @@ func (x *Project) String() string {
 func (*Project) ProtoMessage() {}
 
 func (x *Project) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[10]
+	mi := &file_local_service_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -767,7 +1002,7 @@ func (x *Project) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Project.ProtoReflect.Descriptor instead.
 func (*Project) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{10}
+	return file_local_service_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *Project) GetId() uint64 {
@@ -850,7 +1085,7 @@ type CreateProjectRequest struct {
 func (x *CreateProjectRequest) Reset() {
 	*x = CreateProjectRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[11]
+		mi := &file_local_service_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -863,7 +1098,7 @@ func (x *CreateProjectRequest) String() string {
 func (*CreateProjectRequest) ProtoMessage() {}
 
 func (x *CreateProjectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[11]
+	mi := &file_local_service_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -876,7 +1111,7 @@ func (x *CreateProjectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateProjectRequest.ProtoReflect.Descriptor instead.
 func (*CreateProjectRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{11}
+	return file_local_service_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CreateProjectRequest) GetProjectName() string {
@@ -927,7 +1162,7 @@ type CreateProjectResponse struct {
 func (x *CreateProjectResponse) Reset() {
 	*x = CreateProjectResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[12]
+		mi := &file_local_service_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -940,7 +1175,7 @@ func (x *CreateProjectResponse) String() string {
 func (*CreateProjectResponse) ProtoMessage() {}
 
 func (x *CreateProjectResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[12]
+	mi := &file_local_service_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -953,7 +1188,7 @@ func (x *CreateProjectResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateProjectResponse.ProtoReflect.Descriptor instead.
 func (*CreateProjectResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{12}
+	return file_local_service_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CreateProjectResponse) GetProjectInfo() *Project {
@@ -990,7 +1225,7 @@ type FileInfo struct {
 func (x *FileInfo) Reset() {
 	*x = FileInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[13]
+		mi := &file_local_service_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1003,7 +1238,7 @@ func (x *FileInfo) String() string {
 func (*FileInfo) ProtoMessage() {}
 
 func (x *FileInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[13]
+	mi := &file_local_service_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1016,7 +1251,7 @@ func (x *FileInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileInfo.ProtoReflect.Descriptor instead.
 func (*FileInfo) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{13}
+	return file_local_service_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *FileInfo) GetFileName() string {
@@ -1055,7 +1290,7 @@ type UploadMetadata struct {
 func (x *UploadMetadata) Reset() {
 	*x = UploadMetadata{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[14]
+		mi := &file_local_service_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1068,7 +1303,7 @@ func (x *UploadMetadata) String() string {
 func (*UploadMetadata) ProtoMessage() {}
 
 func (x *UploadMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[14]
+	mi := &file_local_service_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1081,7 +1316,7 @@ func (x *UploadMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadMetadata.ProtoReflect.Descriptor instead.
 func (*UploadMetadata) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{14}
+	return file_local_service_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *UploadMetadata) GetProjectId() uint64 {
@@ -1126,7 +1361,7 @@ type UploadRequest struct {
 func (x *UploadRequest) Reset() {
 	*x = UploadRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[15]
+		mi := &file_local_service_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1139,7 +1374,7 @@ func (x *UploadRequest) String() string {
 func (*UploadRequest) ProtoMessage() {}
 
 func (x *UploadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[15]
+	mi := &file_local_service_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1152,7 +1387,7 @@ func (x *UploadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadRequest.ProtoReflect.Descriptor instead.
 func (*UploadRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{15}
+	return file_local_service_proto_rawDescGZIP(), []int{19}
 }
 
 func (m *UploadRequest) GetData() isUploadRequest_Data {
@@ -1205,7 +1440,7 @@ type UploadResponse struct {
 func (x *UploadResponse) Reset() {
 	*x = UploadResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[16]
+		mi := &file_local_service_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1218,7 +1453,7 @@ func (x *UploadResponse) String() string {
 func (*UploadResponse) ProtoMessage() {}
 
 func (x *UploadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[16]
+	mi := &file_local_service_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1231,7 +1466,7 @@ func (x *UploadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UploadResponse.ProtoReflect.Descriptor instead.
 func (*UploadResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{16}
+	return file_local_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *UploadResponse) GetProjectInfo() *Project {
@@ -1268,7 +1503,7 @@ type DownloadRequest struct {
 func (x *DownloadRequest) Reset() {
 	*x = DownloadRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[17]
+		mi := &file_local_service_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1281,7 +1516,7 @@ func (x *DownloadRequest) String() string {
 func (*DownloadRequest) ProtoMessage() {}
 
 func (x *DownloadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[17]
+	mi := &file_local_service_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1294,7 +1529,7 @@ func (x *DownloadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadRequest.ProtoReflect.Descriptor instead.
 func (*DownloadRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{17}
+	return file_local_service_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *DownloadRequest) GetFileId() string {
@@ -1332,7 +1567,7 @@ type DownloadMetadate struct {
 func (x *DownloadMetadate) Reset() {
 	*x = DownloadMetadate{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[18]
+		mi := &file_local_service_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1345,7 +1580,7 @@ func (x *DownloadMetadate) String() string {
 func (*DownloadMetadate) ProtoMessage() {}
 
 func (x *DownloadMetadate) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[18]
+	mi := &file_local_service_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1358,7 +1593,7 @@ func (x *DownloadMetadate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadMetadate.ProtoReflect.Descriptor instead.
 func (*DownloadMetadate) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{18}
+	return file_local_service_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *DownloadMetadate) GetFileInfo() *FileInfo {
@@ -1403,7 +1638,7 @@ type DownloadResponse struct {
 func (x *DownloadResponse) Reset() {
 	*x = DownloadResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[19]
+		mi := &file_local_service_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1416,7 +1651,7 @@ func (x *DownloadResponse) String() string {
 func (*DownloadResponse) ProtoMessage() {}
 
 func (x *DownloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[19]
+	mi := &file_local_service_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1429,7 +1664,7 @@ func (x *DownloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DownloadResponse.ProtoReflect.Descriptor instead.
 func (*DownloadResponse) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{19}
+	return file_local_service_proto_rawDescGZIP(), []int{23}
 }
 
 func (m *DownloadResponse) GetData() isDownloadResponse_Data {
@@ -1480,7 +1715,7 @@ type HelloRequest struct {
 func (x *HelloRequest) Reset() {
 	*x = HelloRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[20]
+		mi := &file_local_service_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1493,7 +1728,7 @@ func (x *HelloRequest) String() string {
 func (*HelloRequest) ProtoMessage() {}
 
 func (x *HelloRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[20]
+	mi := &file_local_service_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1506,7 +1741,7 @@ func (x *HelloRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HelloRequest.ProtoReflect.Descriptor instead.
 func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{20}
+	return file_local_service_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *HelloRequest) GetName() string {
@@ -1527,7 +1762,7 @@ type HelloReply struct {
 func (x *HelloReply) Reset() {
 	*x = HelloReply{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_local_service_proto_msgTypes[21]
+		mi := &file_local_service_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1540,7 +1775,7 @@ func (x *HelloReply) String() string {
 func (*HelloReply) ProtoMessage() {}
 
 func (x *HelloReply) ProtoReflect() protoreflect.Message {
-	mi := &file_local_service_proto_msgTypes[21]
+	mi := &file_local_service_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1553,7 +1788,7 @@ func (x *HelloReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HelloReply.ProtoReflect.Descriptor instead.
 func (*HelloReply) Descriptor() ([]byte, []int) {
-	return file_local_service_proto_rawDescGZIP(), []int{21}
+	return file_local_service_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *HelloReply) GetMessage() string {
@@ -1569,7 +1804,34 @@ var file_local_service_proto_rawDesc = []byte{
 	0x0a, 0x13, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x02, 0x70, 0x62, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
 	0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73,
-	0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x04, 0x55, 0x73,
+	0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x5a, 0x0a, 0x14, 0x53, 0x65,
+	0x61, 0x72, 0x63, 0x68, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d,
+	0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x18, 0x0a, 0x07,
+	0x6b, 0x65, 0x79, 0x57, 0x6f, 0x72, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b,
+	0x65, 0x79, 0x57, 0x6f, 0x72, 0x64, 0x22, 0x8c, 0x01, 0x0a, 0x15, 0x53, 0x65, 0x61, 0x72, 0x63,
+	0x68, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x2d, 0x0a, 0x0b, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x72, 0x6f, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x0b, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x12,
+	0x2a, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x12, 0x2e, 0x70, 0x62, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x64, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50,
+	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a,
+	0x03, 0x70, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x03, 0x70, 0x69, 0x64, 0x12,
+	0x10, 0x0a, 0x03, 0x75, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x03, 0x75, 0x69,
+	0x64, 0x12, 0x28, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x0c, 0x2e, 0x70, 0x62, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70,
+	0x65, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x22, 0x5d, 0x0a, 0x15, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x70, 0x62, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x46, 0x0a, 0x04, 0x55, 0x73,
 	0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02,
 	0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
@@ -1732,7 +1994,7 @@ var file_local_service_proto_rawDesc = []byte{
 	0x38, 0x0a, 0x08, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x70,
 	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x63, 0x6f, 0x64, 0x65,
 	0x73, 0x10, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x62, 0x69, 0x6e, 0x61, 0x72, 0x79, 0x10, 0x02, 0x12,
-	0x08, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x10, 0x03, 0x32, 0xea, 0x03, 0x0a, 0x07, 0x4d, 0x53,
+	0x08, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x10, 0x03, 0x32, 0xfc, 0x04, 0x0a, 0x07, 0x4d, 0x53,
 	0x4c, 0x6f, 0x63, 0x61, 0x6c, 0x12, 0x2e, 0x0a, 0x08, 0x53, 0x61, 0x79, 0x48, 0x65, 0x6c, 0x6c,
 	0x6f, 0x12, 0x10, 0x2e, 0x70, 0x62, 0x2e, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x1a, 0x0e, 0x2e, 0x70, 0x62, 0x2e, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x52, 0x65,
@@ -1756,15 +2018,24 @@ var file_local_service_proto_rawDesc = []byte{
 	0x18, 0x2e, 0x70, 0x62, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65,
 	0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x62, 0x2e, 0x43,
 	0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x33, 0x0a, 0x06, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64,
-	0x12, 0x11, 0x2e, 0x70, 0x62, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x70, 0x62, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x28, 0x01, 0x12, 0x39, 0x0a, 0x08, 0x44,
-	0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x44, 0x6f, 0x77,
-	0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x70,
-	0x62, 0x2e, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x70, 0x62, 0x5f, 0x67,
-	0x65, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x18, 0x2e, 0x70, 0x62, 0x2e, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x19, 0x2e, 0x70, 0x62, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x6f,
+	0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x33,
+	0x0a, 0x06, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x12, 0x11, 0x2e, 0x70, 0x62, 0x2e, 0x55, 0x70,
+	0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x70, 0x62,
+	0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x28, 0x01, 0x12, 0x39, 0x0a, 0x08, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x12,
+	0x13, 0x2e, 0x70, 0x62, 0x2e, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x70, 0x62, 0x2e, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f,
+	0x61, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x48,
+	0x0a, 0x0d, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x12,
+	0x18, 0x2e, 0x70, 0x62, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x72, 0x6f, 0x6a, 0x65,
+	0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x62, 0x2e, 0x53,
+	0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x70, 0x62,
+	0x5f, 0x67, 0x65, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1780,78 +2051,90 @@ func file_local_service_proto_rawDescGZIP() []byte {
 }
 
 var file_local_service_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_local_service_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_local_service_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_local_service_proto_goTypes = []interface{}{
 	(ResponseStatus)(0),           // 0: pb.ResponseStatus
 	(FileType)(0),                 // 1: pb.FileType
-	(*User)(nil),                  // 2: pb.User
-	(*RegisterUserRequest)(nil),   // 3: pb.RegisterUserRequest
-	(*GetUserRequest)(nil),        // 4: pb.GetUserRequest
-	(*DeleteUserRequest)(nil),     // 5: pb.DeleteUserRequest
-	(*UpdateUserRequest)(nil),     // 6: pb.UpdateUserRequest
-	(*Error)(nil),                 // 7: pb.Error
-	(*RegisterUserResponse)(nil),  // 8: pb.RegisterUserResponse
-	(*GetUserResponse)(nil),       // 9: pb.GetUserResponse
-	(*DeleteUserResponse)(nil),    // 10: pb.DeleteUserResponse
-	(*UpdateUserResponse)(nil),    // 11: pb.UpdateUserResponse
-	(*Project)(nil),               // 12: pb.Project
-	(*CreateProjectRequest)(nil),  // 13: pb.CreateProjectRequest
-	(*CreateProjectResponse)(nil), // 14: pb.CreateProjectResponse
-	(*FileInfo)(nil),              // 15: pb.FileInfo
-	(*UploadMetadata)(nil),        // 16: pb.UploadMetadata
-	(*UploadRequest)(nil),         // 17: pb.UploadRequest
-	(*UploadResponse)(nil),        // 18: pb.UploadResponse
-	(*DownloadRequest)(nil),       // 19: pb.DownloadRequest
-	(*DownloadMetadate)(nil),      // 20: pb.DownloadMetadate
-	(*DownloadResponse)(nil),      // 21: pb.DownloadResponse
-	(*HelloRequest)(nil),          // 22: pb.HelloRequest
-	(*HelloReply)(nil),            // 23: pb.HelloReply
-	(*timestamppb.Timestamp)(nil), // 24: google.protobuf.Timestamp
+	(*SearchProjectRequest)(nil),  // 2: pb.SearchProjectRequest
+	(*SearchProjectResponse)(nil), // 3: pb.SearchProjectResponse
+	(*DeleteProjectRequest)(nil),  // 4: pb.DeleteProjectRequest
+	(*DeleteProjectResponse)(nil), // 5: pb.DeleteProjectResponse
+	(*User)(nil),                  // 6: pb.User
+	(*RegisterUserRequest)(nil),   // 7: pb.RegisterUserRequest
+	(*GetUserRequest)(nil),        // 8: pb.GetUserRequest
+	(*DeleteUserRequest)(nil),     // 9: pb.DeleteUserRequest
+	(*UpdateUserRequest)(nil),     // 10: pb.UpdateUserRequest
+	(*Error)(nil),                 // 11: pb.Error
+	(*RegisterUserResponse)(nil),  // 12: pb.RegisterUserResponse
+	(*GetUserResponse)(nil),       // 13: pb.GetUserResponse
+	(*DeleteUserResponse)(nil),    // 14: pb.DeleteUserResponse
+	(*UpdateUserResponse)(nil),    // 15: pb.UpdateUserResponse
+	(*Project)(nil),               // 16: pb.Project
+	(*CreateProjectRequest)(nil),  // 17: pb.CreateProjectRequest
+	(*CreateProjectResponse)(nil), // 18: pb.CreateProjectResponse
+	(*FileInfo)(nil),              // 19: pb.FileInfo
+	(*UploadMetadata)(nil),        // 20: pb.UploadMetadata
+	(*UploadRequest)(nil),         // 21: pb.UploadRequest
+	(*UploadResponse)(nil),        // 22: pb.UploadResponse
+	(*DownloadRequest)(nil),       // 23: pb.DownloadRequest
+	(*DownloadMetadate)(nil),      // 24: pb.DownloadMetadate
+	(*DownloadResponse)(nil),      // 25: pb.DownloadResponse
+	(*HelloRequest)(nil),          // 26: pb.HelloRequest
+	(*HelloReply)(nil),            // 27: pb.HelloReply
+	(*timestamppb.Timestamp)(nil), // 28: google.protobuf.Timestamp
 }
 var file_local_service_proto_depIdxs = []int32{
-	2,  // 0: pb.UpdateUserRequest.user:type_name -> pb.User
-	2,  // 1: pb.RegisterUserResponse.user:type_name -> pb.User
-	0,  // 2: pb.RegisterUserResponse.status:type_name -> pb.ResponseStatus
-	2,  // 3: pb.GetUserResponse.user:type_name -> pb.User
-	0,  // 4: pb.GetUserResponse.status:type_name -> pb.ResponseStatus
-	0,  // 5: pb.DeleteUserResponse.status:type_name -> pb.ResponseStatus
-	2,  // 6: pb.UpdateUserResponse.user:type_name -> pb.User
-	0,  // 7: pb.UpdateUserResponse.status:type_name -> pb.ResponseStatus
-	24, // 8: pb.Project.updatetime:type_name -> google.protobuf.Timestamp
-	12, // 9: pb.CreateProjectResponse.projectInfo:type_name -> pb.Project
-	0,  // 10: pb.CreateProjectResponse.status:type_name -> pb.ResponseStatus
-	24, // 11: pb.FileInfo.updatetime:type_name -> google.protobuf.Timestamp
-	15, // 12: pb.UploadMetadata.fileInfo:type_name -> pb.FileInfo
-	1,  // 13: pb.UploadMetadata.fileType:type_name -> pb.FileType
-	16, // 14: pb.UploadRequest.metadata:type_name -> pb.UploadMetadata
-	12, // 15: pb.UploadResponse.projectInfo:type_name -> pb.Project
-	0,  // 16: pb.UploadResponse.status:type_name -> pb.ResponseStatus
-	1,  // 17: pb.DownloadRequest.fileType:type_name -> pb.FileType
-	15, // 18: pb.DownloadMetadate.fileInfo:type_name -> pb.FileInfo
-	1,  // 19: pb.DownloadMetadate.fileType:type_name -> pb.FileType
-	0,  // 20: pb.DownloadMetadate.status:type_name -> pb.ResponseStatus
-	20, // 21: pb.DownloadResponse.metadata:type_name -> pb.DownloadMetadate
-	22, // 22: pb.MSLocal.SayHello:input_type -> pb.HelloRequest
-	3,  // 23: pb.MSLocal.RegisterUser:input_type -> pb.RegisterUserRequest
-	4,  // 24: pb.MSLocal.GetUser:input_type -> pb.GetUserRequest
-	5,  // 25: pb.MSLocal.DeleteUser:input_type -> pb.DeleteUserRequest
-	6,  // 26: pb.MSLocal.UpdateUser:input_type -> pb.UpdateUserRequest
-	13, // 27: pb.MSLocal.CreateProject:input_type -> pb.CreateProjectRequest
-	17, // 28: pb.MSLocal.Upload:input_type -> pb.UploadRequest
-	19, // 29: pb.MSLocal.Download:input_type -> pb.DownloadRequest
-	23, // 30: pb.MSLocal.SayHello:output_type -> pb.HelloReply
-	8,  // 31: pb.MSLocal.RegisterUser:output_type -> pb.RegisterUserResponse
-	9,  // 32: pb.MSLocal.GetUser:output_type -> pb.GetUserResponse
-	10, // 33: pb.MSLocal.DeleteUser:output_type -> pb.DeleteUserResponse
-	11, // 34: pb.MSLocal.UpdateUser:output_type -> pb.UpdateUserResponse
-	14, // 35: pb.MSLocal.CreateProject:output_type -> pb.CreateProjectResponse
-	18, // 36: pb.MSLocal.Upload:output_type -> pb.UploadResponse
-	21, // 37: pb.MSLocal.Download:output_type -> pb.DownloadResponse
-	30, // [30:38] is the sub-list for method output_type
-	22, // [22:30] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	16, // 0: pb.SearchProjectResponse.projectInfo:type_name -> pb.Project
+	0,  // 1: pb.SearchProjectResponse.status:type_name -> pb.ResponseStatus
+	1,  // 2: pb.DeleteProjectRequest.fileType:type_name -> pb.FileType
+	0,  // 3: pb.DeleteProjectResponse.status:type_name -> pb.ResponseStatus
+	6,  // 4: pb.UpdateUserRequest.user:type_name -> pb.User
+	6,  // 5: pb.RegisterUserResponse.user:type_name -> pb.User
+	0,  // 6: pb.RegisterUserResponse.status:type_name -> pb.ResponseStatus
+	6,  // 7: pb.GetUserResponse.user:type_name -> pb.User
+	0,  // 8: pb.GetUserResponse.status:type_name -> pb.ResponseStatus
+	0,  // 9: pb.DeleteUserResponse.status:type_name -> pb.ResponseStatus
+	6,  // 10: pb.UpdateUserResponse.user:type_name -> pb.User
+	0,  // 11: pb.UpdateUserResponse.status:type_name -> pb.ResponseStatus
+	28, // 12: pb.Project.updatetime:type_name -> google.protobuf.Timestamp
+	16, // 13: pb.CreateProjectResponse.projectInfo:type_name -> pb.Project
+	0,  // 14: pb.CreateProjectResponse.status:type_name -> pb.ResponseStatus
+	28, // 15: pb.FileInfo.updatetime:type_name -> google.protobuf.Timestamp
+	19, // 16: pb.UploadMetadata.fileInfo:type_name -> pb.FileInfo
+	1,  // 17: pb.UploadMetadata.fileType:type_name -> pb.FileType
+	20, // 18: pb.UploadRequest.metadata:type_name -> pb.UploadMetadata
+	16, // 19: pb.UploadResponse.projectInfo:type_name -> pb.Project
+	0,  // 20: pb.UploadResponse.status:type_name -> pb.ResponseStatus
+	1,  // 21: pb.DownloadRequest.fileType:type_name -> pb.FileType
+	19, // 22: pb.DownloadMetadate.fileInfo:type_name -> pb.FileInfo
+	1,  // 23: pb.DownloadMetadate.fileType:type_name -> pb.FileType
+	0,  // 24: pb.DownloadMetadate.status:type_name -> pb.ResponseStatus
+	24, // 25: pb.DownloadResponse.metadata:type_name -> pb.DownloadMetadate
+	26, // 26: pb.MSLocal.SayHello:input_type -> pb.HelloRequest
+	7,  // 27: pb.MSLocal.RegisterUser:input_type -> pb.RegisterUserRequest
+	8,  // 28: pb.MSLocal.GetUser:input_type -> pb.GetUserRequest
+	9,  // 29: pb.MSLocal.DeleteUser:input_type -> pb.DeleteUserRequest
+	10, // 30: pb.MSLocal.UpdateUser:input_type -> pb.UpdateUserRequest
+	17, // 31: pb.MSLocal.CreateProject:input_type -> pb.CreateProjectRequest
+	4,  // 32: pb.MSLocal.DeleteProject:input_type -> pb.DeleteProjectRequest
+	21, // 33: pb.MSLocal.Upload:input_type -> pb.UploadRequest
+	23, // 34: pb.MSLocal.Download:input_type -> pb.DownloadRequest
+	2,  // 35: pb.MSLocal.SearchProject:input_type -> pb.SearchProjectRequest
+	27, // 36: pb.MSLocal.SayHello:output_type -> pb.HelloReply
+	12, // 37: pb.MSLocal.RegisterUser:output_type -> pb.RegisterUserResponse
+	13, // 38: pb.MSLocal.GetUser:output_type -> pb.GetUserResponse
+	14, // 39: pb.MSLocal.DeleteUser:output_type -> pb.DeleteUserResponse
+	15, // 40: pb.MSLocal.UpdateUser:output_type -> pb.UpdateUserResponse
+	18, // 41: pb.MSLocal.CreateProject:output_type -> pb.CreateProjectResponse
+	5,  // 42: pb.MSLocal.DeleteProject:output_type -> pb.DeleteProjectResponse
+	22, // 43: pb.MSLocal.Upload:output_type -> pb.UploadResponse
+	25, // 44: pb.MSLocal.Download:output_type -> pb.DownloadResponse
+	3,  // 45: pb.MSLocal.SearchProject:output_type -> pb.SearchProjectResponse
+	36, // [36:46] is the sub-list for method output_type
+	26, // [26:36] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_local_service_proto_init() }
@@ -1861,7 +2144,7 @@ func file_local_service_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_local_service_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*User); i {
+			switch v := v.(*SearchProjectRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1873,7 +2156,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterUserRequest); i {
+			switch v := v.(*SearchProjectResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1885,7 +2168,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserRequest); i {
+			switch v := v.(*DeleteProjectRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1897,7 +2180,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteUserRequest); i {
+			switch v := v.(*DeleteProjectResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1909,7 +2192,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateUserRequest); i {
+			switch v := v.(*User); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1921,7 +2204,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Error); i {
+			switch v := v.(*RegisterUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1933,7 +2216,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterUserResponse); i {
+			switch v := v.(*GetUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1945,7 +2228,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserResponse); i {
+			switch v := v.(*DeleteUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1957,7 +2240,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeleteUserResponse); i {
+			switch v := v.(*UpdateUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1969,7 +2252,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateUserResponse); i {
+			switch v := v.(*Error); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1981,7 +2264,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Project); i {
+			switch v := v.(*RegisterUserResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1993,7 +2276,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateProjectRequest); i {
+			switch v := v.(*GetUserResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2005,7 +2288,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateProjectResponse); i {
+			switch v := v.(*DeleteUserResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2017,7 +2300,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileInfo); i {
+			switch v := v.(*UpdateUserResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2029,7 +2312,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadMetadata); i {
+			switch v := v.(*Project); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2041,7 +2324,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadRequest); i {
+			switch v := v.(*CreateProjectRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2053,7 +2336,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadResponse); i {
+			switch v := v.(*CreateProjectResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2065,7 +2348,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DownloadRequest); i {
+			switch v := v.(*FileInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2077,7 +2360,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DownloadMetadate); i {
+			switch v := v.(*UploadMetadata); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2089,7 +2372,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DownloadResponse); i {
+			switch v := v.(*UploadRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2101,7 +2384,7 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HelloRequest); i {
+			switch v := v.(*UploadResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2113,6 +2396,54 @@ func file_local_service_proto_init() {
 			}
 		}
 		file_local_service_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DownloadRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_local_service_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DownloadMetadate); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_local_service_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DownloadResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_local_service_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HelloRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_local_service_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*HelloReply); i {
 			case 0:
 				return &v.state
@@ -2125,11 +2456,11 @@ func file_local_service_proto_init() {
 			}
 		}
 	}
-	file_local_service_proto_msgTypes[15].OneofWrappers = []interface{}{
+	file_local_service_proto_msgTypes[19].OneofWrappers = []interface{}{
 		(*UploadRequest_Metadata)(nil),
 		(*UploadRequest_Content)(nil),
 	}
-	file_local_service_proto_msgTypes[19].OneofWrappers = []interface{}{
+	file_local_service_proto_msgTypes[23].OneofWrappers = []interface{}{
 		(*DownloadResponse_Metadata)(nil),
 		(*DownloadResponse_Content)(nil),
 	}
@@ -2139,7 +2470,7 @@ func file_local_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_local_service_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   22,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

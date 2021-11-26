@@ -4,6 +4,7 @@ import (
 	"MS_Local/mysql/model"
 	"gorm.io/gorm"
 	"log"
+	"strings"
 )
 
 // Add Project
@@ -65,6 +66,18 @@ func GetProjectsByOptions(db *gorm.DB, options map[string]interface{}) ([]model.
 		log.Printf("get project by options error, err=[%v]", err)
 	}
 	return projects, err
+}
+
+func SearchProjectByName(db *gorm.DB, name string) ([]model.Project, error) {
+	var projects []model.Project
+	pattern := strings.Join([]string{"%", name, "%"}, "")
+	//err := db.Where("project_name LIKE ?", pattern).Find(&projects).Error
+	err := db.Order("").Where("project_name LIKE ?", pattern).Find(&projects).Error
+	if err != nil {
+		log.Printf("serach failed, err=[%v]", err)
+		return nil, err
+	}
+	return projects, nil
 }
 
 // Delete Project from list

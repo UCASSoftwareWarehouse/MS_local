@@ -10,20 +10,35 @@ service MSLocal {
   rpc UpdateUser(UpdateUserRequest) returns(UpdateUserResponse){}
   //   rpc ChangePassword() returns(){}
   rpc CreateProject(CreateProjectRequest) returns(CreateProjectResponse){}
+  rpc DeleteProject(DeleteProjectRequest) returns(DeleteProjectResponse){}
   rpc Upload(stream UploadRequest) returns(UploadResponse){}
   rpc Download(DownloadRequest) returns(stream DownloadResponse){}
-//  rpc SearchCode(SearchCodeRequest) returns(SearchCodeResponse){}
+  rpc SearchProject(SearchProjectRequest) returns(stream SearchProjectResponse){}
 }
 
-//message UserId{
-//  int64  id = 1;
-//}
-//message UserName{
-//  string name = 1;
-//}
-//message UserPassword{
-//  string password = 1;
-//}
+message SearchProjectRequest{
+  uint32 page = 1;
+  uint32 limit = 2;
+  string keyWord = 3;
+}
+
+message SearchProjectResponse{
+  Project projectInfo = 1;
+  ResponseStatus status = 2;
+  string message = 3;
+}
+
+message DeleteProjectRequest{
+  uint64 pid = 1;
+  uint64 uid = 2;
+  FileType fileType = 3;
+}
+
+message DeleteProjectResponse{
+  ResponseStatus status = 1;
+  string message = 2;
+}
+
 message User{
   uint64 id = 1;
   string name=2;

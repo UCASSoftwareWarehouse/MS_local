@@ -19,7 +19,7 @@ func TestAddBinary(t *testing.T) {
 	binary := model.Binary{
 		//FileID: primitive.NewObjectID(),
 		FileName:   "test",
-		ProjectID:  1,
+		ProjectID:  10,
 		FileSize:   16,
 		UpdateTime: mongodb2.Time2Timestamp(time.Now()),
 		Content:    []byte("hello mongodb"),
@@ -119,8 +119,18 @@ func TestDeleteOneBinaryByFileId(t *testing.T) {
 	db, _ := mongodb.InitMongo()
 	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
 	var stringid = "619dda3a215c2f4ed65ff317"
-	err := DeleteOneBinaryByFileId(context.Background(), *collection, mongodb2.String2ObjectId(stringid))
+	err := DeleteOneBinaryByFileId(context.Background(), collection, mongodb2.String2ObjectId(stringid))
 	if err != nil {
 		t.Errorf("test delete one codefile failed")
 	}
+}
+
+func TestDeleteBinaryByProjectId(t *testing.T) {
+	db, _ := mongodb.InitMongo()
+	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
+	err := DeleteBinaryByProjectId(context.Background(), collection, 10)
+	if err != nil {
+		t.Errorf("test delete by project id failed")
+	}
+
 }

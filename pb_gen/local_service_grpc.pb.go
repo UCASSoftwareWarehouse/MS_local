@@ -25,8 +25,10 @@ type MSLocalClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	//   rpc ChangePassword() returns(){}
 	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error)
+	DeleteProject(ctx context.Context, in *DeleteProjectRequest, opts ...grpc.CallOption) (*DeleteProjectResponse, error)
 	Upload(ctx context.Context, opts ...grpc.CallOption) (MSLocal_UploadClient, error)
 	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (MSLocal_DownloadClient, error)
+	SearchProject(ctx context.Context, in *SearchProjectRequest, opts ...grpc.CallOption) (MSLocal_SearchProjectClient, error)
 }
 
 type mSLocalClient struct {
@@ -85,6 +87,15 @@ func (c *mSLocalClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, o
 func (c *mSLocalClient) CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error) {
 	out := new(CreateProjectResponse)
 	err := c.cc.Invoke(ctx, "/pb.MSLocal/CreateProject", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mSLocalClient) DeleteProject(ctx context.Context, in *DeleteProjectRequest, opts ...grpc.CallOption) (*DeleteProjectResponse, error) {
+	out := new(DeleteProjectResponse)
+	err := c.cc.Invoke(ctx, "/pb.MSLocal/DeleteProject", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,6 +168,38 @@ func (x *mSLocalDownloadClient) Recv() (*DownloadResponse, error) {
 	return m, nil
 }
 
+func (c *mSLocalClient) SearchProject(ctx context.Context, in *SearchProjectRequest, opts ...grpc.CallOption) (MSLocal_SearchProjectClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[2], "/pb.MSLocal/SearchProject", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &mSLocalSearchProjectClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MSLocal_SearchProjectClient interface {
+	Recv() (*SearchProjectResponse, error)
+	grpc.ClientStream
+}
+
+type mSLocalSearchProjectClient struct {
+	grpc.ClientStream
+}
+
+func (x *mSLocalSearchProjectClient) Recv() (*SearchProjectResponse, error) {
+	m := new(SearchProjectResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MSLocalServer is the server API for MSLocal service.
 // All implementations must embed UnimplementedMSLocalServer
 // for forward compatibility
@@ -168,8 +211,10 @@ type MSLocalServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	//   rpc ChangePassword() returns(){}
 	CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error)
+	DeleteProject(context.Context, *DeleteProjectRequest) (*DeleteProjectResponse, error)
 	Upload(MSLocal_UploadServer) error
 	Download(*DownloadRequest, MSLocal_DownloadServer) error
+	SearchProject(*SearchProjectRequest, MSLocal_SearchProjectServer) error
 	mustEmbedUnimplementedMSLocalServer()
 }
 
@@ -195,11 +240,17 @@ func (UnimplementedMSLocalServer) UpdateUser(context.Context, *UpdateUserRequest
 func (UnimplementedMSLocalServer) CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProject not implemented")
 }
+func (UnimplementedMSLocalServer) DeleteProject(context.Context, *DeleteProjectRequest) (*DeleteProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProject not implemented")
+}
 func (UnimplementedMSLocalServer) Upload(MSLocal_UploadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Upload not implemented")
 }
 func (UnimplementedMSLocalServer) Download(*DownloadRequest, MSLocal_DownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
+}
+func (UnimplementedMSLocalServer) SearchProject(*SearchProjectRequest, MSLocal_SearchProjectServer) error {
+	return status.Errorf(codes.Unimplemented, "method SearchProject not implemented")
 }
 func (UnimplementedMSLocalServer) mustEmbedUnimplementedMSLocalServer() {}
 
@@ -322,6 +373,24 @@ func _MSLocal_CreateProject_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MSLocal_DeleteProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MSLocalServer).DeleteProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.MSLocal/DeleteProject",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MSLocalServer).DeleteProject(ctx, req.(*DeleteProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MSLocal_Upload_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(MSLocalServer).Upload(&mSLocalUploadServer{stream})
 }
@@ -369,6 +438,27 @@ func (x *mSLocalDownloadServer) Send(m *DownloadResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _MSLocal_SearchProject_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SearchProjectRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MSLocalServer).SearchProject(m, &mSLocalSearchProjectServer{stream})
+}
+
+type MSLocal_SearchProjectServer interface {
+	Send(*SearchProjectResponse) error
+	grpc.ServerStream
+}
+
+type mSLocalSearchProjectServer struct {
+	grpc.ServerStream
+}
+
+func (x *mSLocalSearchProjectServer) Send(m *SearchProjectResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // MSLocal_ServiceDesc is the grpc.ServiceDesc for MSLocal service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -400,6 +490,10 @@ var MSLocal_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "CreateProject",
 			Handler:    _MSLocal_CreateProject_Handler,
 		},
+		{
+			MethodName: "DeleteProject",
+			Handler:    _MSLocal_DeleteProject_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
@@ -410,6 +504,11 @@ var MSLocal_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Download",
 			Handler:       _MSLocal_Download_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "SearchProject",
+			Handler:       _MSLocal_SearchProject_Handler,
 			ServerStreams: true,
 		},
 	},

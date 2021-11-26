@@ -78,7 +78,24 @@ func GetBinaryByFileId(ctx context.Context, collection *mongo.Collection, id pri
 //	return *result, err
 //}
 
-func DeleteOneBinaryByFileId(ctx context.Context, collection mongo.Collection, id primitive.ObjectID) error {
+func DeleteBinaryByProjectId(ctx context.Context, collection *mongo.Collection, id uint64) error {
+	filter := bson.M{model.BinaryColumns.ProjectID: id}
+
+	opts := options.Delete().SetCollation(&options.Collation{
+		Locale:    "en_US",
+		Strength:  1,
+		CaseLevel: false,
+	})
+	deleteResult, err := collection.DeleteOne(ctx, filter, opts)
+	if err != nil {
+		log.Printf("Delete one by file id error, err=[%v]", err)
+		return err
+	}
+	log.Println("collection.DeleteOne:", deleteResult)
+	return err
+}
+
+func DeleteOneBinaryByFileId(ctx context.Context, collection *mongo.Collection, id primitive.ObjectID) error {
 	filter := bson.M{model.BinaryColumns.FileID: id}
 
 	opts := options.Delete().SetCollation(&options.Collation{
@@ -89,6 +106,7 @@ func DeleteOneBinaryByFileId(ctx context.Context, collection mongo.Collection, i
 	deleteResult, err := collection.DeleteOne(ctx, filter, opts)
 	if err != nil {
 		log.Printf("Delete one by file id error, err=[%v]", err)
+		return err
 	}
 	log.Println("collection.DeleteOne:", deleteResult)
 	return err
