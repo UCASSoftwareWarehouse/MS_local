@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS project
     license             VARCHAR(50),
     update_time         TIMESTAMP       NOT NULL,
     project_description TEXT,
+    FULLTEXT(project_name),
     foreign key (user_id) references user (id)
         on update cascade
         on delete cascade

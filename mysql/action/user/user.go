@@ -32,37 +32,57 @@ func GetUserByUserId(db *gorm.DB, userId uint64) (model.User, error) {
 	return *user, err
 }
 
-func GetUserByUserName(db *gorm.DB, name string) (model.User, error) {
+func GetUserByUserName(db *gorm.DB, name string) (*model.User, error) {
 	user := new(model.User)
 	err := db.Where("user_name = ?", name).First(user).Error
 	if err != nil {
 		log.Printf("get user by user id error, err=[%v]", err)
+		return nil, err
 	}
-	return *user, err
+	return user, err
 }
 
-func UpdateUserName(db *gorm.DB, userId uint64, newName string) (model.User, error) {
-	user, _ := GetUserByUserId(db, userId)
-	err := db.Model(&user).Update("user_name", newName).Error
+func UpdateUserInfo(db *gorm.DB, uid uint64, column string, value string) error {
+	user, err := GetUserByUserId(db, uid)
+	if err != nil {
+		log.Printf("get user in update user info failed, err=[%v]", err)
+		return err
+	}
+	err = db.Model(&user).Update(column, value).Error
 	if err != nil {
 		log.Printf("update user name error, err=[%v]", err)
+		return err
 	}
-	return user, err
+	log.Printf("change user %s to %s", column, value)
+	return nil
 }
 
-func UpdateUserPassword(db *gorm.DB, userId uint64, newPassword string) (model.User, error) {
-	user, _ := GetUserByUserId(db, userId)
-	err := db.Model(&user).Update("password", newPassword).Error
-	if err != nil {
-		log.Printf("update user password error, err=[%v]", err)
-	}
-	return user, err
-}
+//func UpdateUserName(db *gorm.DB, userId uint64, newName string) (error) {
+//	//user, _ := GetUserByUserId(db, userId)
+//	//err := db.Model(&user).Update("user_name", newName).Error
+//	err := db.Where("id = ?", userId).Update("user_name", newName).Error
+//	if err != nil {
+//		log.Printf("update user name error, err=[%v]", err)
+//	}
+//	log.Printf("change user name to %s", newName)
+//	return err
+//}
+//
+//func UpdateUserPassword(db *gorm.DB, userId uint64, newPassword string) ( error) {
+//	user, _ := GetUserByUserId(db, userId)
+//	err := db.Model(&user).Update("password", newPassword).Error
+//	if err != nil {
+//		log.Printf("update user password error, err=[%v]", err)
+//	}
+//	return  err
+//}
 
 func DeleteByUserId(db *gorm.DB, id uint64) error {
 	err := db.Where(&model.User{ID: id}).Delete(model.User{}).Error
 	if err != nil {
 		log.Printf("delete by user id error, err=[%v]", err)
+		return err
 	}
-	return err
+	log.Printf("delete user success")
+	return nil
 }

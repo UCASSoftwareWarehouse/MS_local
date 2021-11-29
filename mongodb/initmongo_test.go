@@ -1,11 +1,13 @@
 package mongodb
 
 import (
+	"MS_Local/config"
 	"fmt"
 	"testing"
 )
 
 func TestInitMongo(t *testing.T) {
-	_, err := InitMongo()
+	config.InitConfig()
+	err := InitMongo()
 	fmt.Println(err)
 }

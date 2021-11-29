@@ -92,7 +92,6 @@ func (cli *LocalClient) Upload(uid uint64, pid uint64, fpath string, fileType pb
 		log.Printf("cannot receive response: ", err)
 		return err
 	}
-	log.Printf("file upload %s", res.Message)
 	log.Printf("file info:\n%v", res.ProjectInfo)
 	return nil
 }

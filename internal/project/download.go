@@ -51,8 +51,6 @@ func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer)
 			Metadata: &pb_gen.DownloadMetadate{
 				FileInfo: fminfo,
 				FileType: req.FileType,
-				Status:   pb_gen.ResponseStatus_ok,
-				Message:  "download success",
 			}}}
 	err = stream.Send(res)
 	if err != nil {

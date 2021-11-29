@@ -1,11 +1,14 @@
 package mysql
 
 import (
-	"fmt"
+	"MS_Local/config"
 	"testing"
 )
 
 func TestInitMysql(t *testing.T) {
-	_, err := InitMysql()
-	fmt.Println(err)
+	config.InitConfig()
+	err := InitMysql()
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 }

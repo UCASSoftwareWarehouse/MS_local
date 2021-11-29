@@ -3,6 +3,7 @@ package mongodb
 import (
 	"MS_Local/config"
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -14,10 +15,10 @@ var Softwaredb *mongo.Database
 var BinaryCol *mongo.Collection
 var CodeCol *mongo.Collection
 
-func InitMongo() (*mongo.Database, error) {
+func InitMongo() error {
 	var (
 		client   *mongo.Client
-		mongoURL = config.MongoUrl
+		mongoURL = fmt.Sprintf("mongodb://%s", config.Conf.MongodbAddr)
 	)
 
 	// Initialize a new mongo client with options
@@ -37,13 +38,13 @@ func InitMongo() (*mongo.Database, error) {
 	db := client.Database("Files")
 	Softwaredb = db
 	initCollection(db)
-	return db, err
+	return err
 }
 
 func initCollection(DB *mongo.Database) {
-	bc := DB.Collection(config.BinaryCollection)
+	bc := DB.Collection(config.Conf.MongodbBinary)
 	BinaryCol = bc
-	cc := DB.Collection(config.CodeCollection)
+	cc := DB.Collection(config.Conf.MongodbCode)
 	CodeCol = cc
 }
 

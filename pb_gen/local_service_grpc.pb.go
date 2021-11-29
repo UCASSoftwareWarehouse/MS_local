@@ -20,13 +20,15 @@ const _ = grpc.SupportPackageIsVersion7
 type MSLocalClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
-	//   rpc ChangePassword() returns(){}
+	//   project
 	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error)
 	DeleteProject(ctx context.Context, in *DeleteProjectRequest, opts ...grpc.CallOption) (*DeleteProjectResponse, error)
 	Upload(ctx context.Context, opts ...grpc.CallOption) (MSLocal_UploadClient, error)
+	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (MSLocal_GetProjectClient, error)
 	Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (MSLocal_DownloadClient, error)
 	SearchProject(ctx context.Context, in *SearchProjectRequest, opts ...grpc.CallOption) (MSLocal_SearchProjectClient, error)
 }
@@ -51,6 +53,15 @@ func (c *mSLocalClient) SayHello(ctx context.Context, in *HelloRequest, opts ...
 func (c *mSLocalClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error) {
 	out := new(RegisterUserResponse)
 	err := c.cc.Invoke(ctx, "/pb.MSLocal/RegisterUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mSLocalClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
+	out := new(LoginUserResponse)
+	err := c.cc.Invoke(ctx, "/pb.MSLocal/LoginUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,8 +147,40 @@ func (x *mSLocalUploadClient) CloseAndRecv() (*UploadResponse, error) {
 	return m, nil
 }
 
+func (c *mSLocalClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (MSLocal_GetProjectClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[1], "/pb.MSLocal/GetProject", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &mSLocalGetProjectClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MSLocal_GetProjectClient interface {
+	Recv() (*GetProjectResponse, error)
+	grpc.ClientStream
+}
+
+type mSLocalGetProjectClient struct {
+	grpc.ClientStream
+}
+
+func (x *mSLocalGetProjectClient) Recv() (*GetProjectResponse, error) {
+	m := new(GetProjectResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *mSLocalClient) Download(ctx context.Context, in *DownloadRequest, opts ...grpc.CallOption) (MSLocal_DownloadClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[1], "/pb.MSLocal/Download", opts...)
+	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[2], "/pb.MSLocal/Download", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +212,7 @@ func (x *mSLocalDownloadClient) Recv() (*DownloadResponse, error) {
 }
 
 func (c *mSLocalClient) SearchProject(ctx context.Context, in *SearchProjectRequest, opts ...grpc.CallOption) (MSLocal_SearchProjectClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[2], "/pb.MSLocal/SearchProject", opts...)
+	stream, err := c.cc.NewStream(ctx, &MSLocal_ServiceDesc.Streams[3], "/pb.MSLocal/SearchProject", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -206,13 +249,15 @@ func (x *mSLocalSearchProjectClient) Recv() (*SearchProjectResponse, error) {
 type MSLocalServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
+	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
-	//   rpc ChangePassword() returns(){}
+	//   project
 	CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error)
 	DeleteProject(context.Context, *DeleteProjectRequest) (*DeleteProjectResponse, error)
 	Upload(MSLocal_UploadServer) error
+	GetProject(*GetProjectRequest, MSLocal_GetProjectServer) error
 	Download(*DownloadRequest, MSLocal_DownloadServer) error
 	SearchProject(*SearchProjectRequest, MSLocal_SearchProjectServer) error
 	mustEmbedUnimplementedMSLocalServer()
@@ -227,6 +272,9 @@ func (UnimplementedMSLocalServer) SayHello(context.Context, *HelloRequest) (*Hel
 }
 func (UnimplementedMSLocalServer) RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
+}
+func (UnimplementedMSLocalServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
 func (UnimplementedMSLocalServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
@@ -245,6 +293,9 @@ func (UnimplementedMSLocalServer) DeleteProject(context.Context, *DeleteProjectR
 }
 func (UnimplementedMSLocalServer) Upload(MSLocal_UploadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Upload not implemented")
+}
+func (UnimplementedMSLocalServer) GetProject(*GetProjectRequest, MSLocal_GetProjectServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetProject not implemented")
 }
 func (UnimplementedMSLocalServer) Download(*DownloadRequest, MSLocal_DownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
@@ -297,6 +348,24 @@ func _MSLocal_RegisterUser_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MSLocalServer).RegisterUser(ctx, req.(*RegisterUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MSLocal_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MSLocalServer).LoginUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.MSLocal/LoginUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MSLocalServer).LoginUser(ctx, req.(*LoginUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -417,6 +486,27 @@ func (x *mSLocalUploadServer) Recv() (*UploadRequest, error) {
 	return m, nil
 }
 
+func _MSLocal_GetProject_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetProjectRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MSLocalServer).GetProject(m, &mSLocalGetProjectServer{stream})
+}
+
+type MSLocal_GetProjectServer interface {
+	Send(*GetProjectResponse) error
+	grpc.ServerStream
+}
+
+type mSLocalGetProjectServer struct {
+	grpc.ServerStream
+}
+
+func (x *mSLocalGetProjectServer) Send(m *GetProjectResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _MSLocal_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(DownloadRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -475,6 +565,10 @@ var MSLocal_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MSLocal_RegisterUser_Handler,
 		},
 		{
+			MethodName: "LoginUser",
+			Handler:    _MSLocal_LoginUser_Handler,
+		},
+		{
 			MethodName: "GetUser",
 			Handler:    _MSLocal_GetUser_Handler,
 		},
@@ -500,6 +594,11 @@ var MSLocal_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Upload",
 			Handler:       _MSLocal_Upload_Handler,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "GetProject",
+			Handler:       _MSLocal_GetProject_Handler,
+			ServerStreams: true,
 		},
 		{
 			StreamName:    "Download",

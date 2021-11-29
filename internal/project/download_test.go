@@ -1,17 +1,17 @@
 package project
 
 import (
+	"MS_Local/client"
 	"MS_Local/client/project"
 	"MS_Local/mongodb"
 	"MS_Local/mysql"
 	"MS_Local/pb_gen"
-	"MS_Local/server"
 	"log"
 	"testing"
 )
 
 func TestDownload(t *testing.T) {
-	conn := server.InitMSLocalClient()
+	conn := client.InitMSLocalClient()
 	defer conn.Close()
 	cli := project.NewLocalClient(conn)
 	fid := "619d2218e9f25f10df00a109"

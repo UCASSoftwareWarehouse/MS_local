@@ -11,47 +11,29 @@ import (
 	"context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"log"
 )
 
 func Delete(ctx context.Context, req *pb_gen.DeleteProjectRequest) (*pb_gen.DeleteProjectResponse, error) {
 	//get
-	pro, err := project.GetProjectById(mysql.Mysql, req.GetPid())
-	if err != nil {
-		return &pb_gen.DeleteProjectResponse{
-			Status:  pb_gen.ResponseStatus_fail,
-			Message: "find pro failed",
-		}, err
-	}
 
 	if req.FileType == pb_gen.FileType_project {
-		err := DeleteProject(pro)
+		err := DeleteProject(req.Pid)
 		if err != nil {
-			return &pb_gen.DeleteProjectResponse{
-				Status:  pb_gen.ResponseStatus_fail,
-				Message: "delete project failed",
-			}, err
+			return nil, err
 		}
 	} else if req.FileType == pb_gen.FileType_binary {
-		err := DeleteBinary(pro.ID)
+		err := DeleteBinary(req.Pid)
 		if err != nil {
-			return &pb_gen.DeleteProjectResponse{
-				Status:  pb_gen.ResponseStatus_fail,
-				Message: "delete binary failed",
-			}, err
+			return nil, err
 		}
 	} else if req.FileType == pb_gen.FileType_codes {
-		err := DeleteCodes(pro.ID)
+		err := DeleteCodes(req.Pid)
 		if err != nil {
-			return &pb_gen.DeleteProjectResponse{
-				Status:  pb_gen.ResponseStatus_fail,
-				Message: "delete codes failed",
-			}, err
+			return nil, err
 		}
 	} else {
-		return &pb_gen.DeleteProjectResponse{
-			Status:  pb_gen.ResponseStatus_fail,
-			Message: "file type error",
-		}, status.Errorf(codes.InvalidArgument, "can only delete pro/codes/binary")
+		return nil, status.Errorf(codes.InvalidArgument, "can only delete pro/codes/binary")
 	}
 	//if ctx.Err() == context.Canceled {
 	//	log.Print("request is canceled")
@@ -64,12 +46,15 @@ func Delete(ctx context.Context, req *pb_gen.DeleteProjectRequest) (*pb_gen.Dele
 	//}
 
 	return &pb_gen.DeleteProjectResponse{
-		Status:  pb_gen.ResponseStatus_ok,
 		Message: "success",
 	}, nil
 }
 
-func DeleteProject(pro *model.Project) error {
+func DeleteProject(pid uint64) error {
+	pro, err := project.GetProjectById(mysql.Mysql, pid)
+	if err != nil {
+		return err
+	}
 	//delete binary
 	baddr := pro.BinaryAddr
 	if baddr != "" {
@@ -87,7 +72,7 @@ func DeleteProject(pro *model.Project) error {
 		}
 	}
 	//delete project
-	err := project.DeleteProjectById(mysql.Mysql, pro.ID)
+	err = project.DeleteProjectById(mysql.Mysql, pro.ID)
 	if err != nil {
 		return err
 	}
@@ -95,8 +80,17 @@ func DeleteProject(pro *model.Project) error {
 }
 
 func DeleteBinary(pid uint64) error {
+	//check
+	pro, err := project.GetProjectById(mysql.Mysql, pid)
+	if err != nil {
+		return err
+	}
+	//no binary
+	if pro.BinaryAddr == "" {
+		return nil
+	}
 	//delete
-	err := binary.DeleteBinaryByProjectId(context.Background(), mongodb.BinaryCol, pid)
+	err = binary.DeleteBinaryByProjectId(context.Background(), mongodb.BinaryCol, pid)
 	if err != nil {
 		return err
 	}
@@ -105,12 +99,21 @@ func DeleteBinary(pid uint64) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("delete %d binary success", pid)
 	return nil
 }
 
 func DeleteCodes(pid uint64) error {
+	//check
+	pro, err := project.GetProjectById(mysql.Mysql, pid)
+	if err != nil {
+		return err
+	}
+	if pro.CodeAddr == "" {
+		return nil
+	}
 	//delete
-	err := code2.DeleteManyCodesByProjectId(context.Background(), mongodb.CodeCol, pid)
+	err = code2.DeleteManyCodesByProjectId(context.Background(), mongodb.CodeCol, pid)
 	if err != nil {
 		return err
 	}
@@ -119,5 +122,7 @@ func DeleteCodes(pid uint64) error {
 	if err != nil {
 		return err
 	}
+
+	log.Printf("delete %d code success", pid)
 	return nil
 }

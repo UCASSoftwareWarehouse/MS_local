@@ -1,11 +1,11 @@
 package project
 
 import (
+	"MS_Local/client"
 	"MS_Local/client/project"
 	"MS_Local/mongodb"
 	"MS_Local/mysql"
 	"MS_Local/pb_gen"
-	"MS_Local/server"
 	"MS_Local/utils"
 	"os"
 	"testing"
@@ -56,11 +56,11 @@ func TestUploader_SaveCodes(t *testing.T) {
 }
 
 func TestUpload(t *testing.T) {
-	conn := server.InitMSLocalClient()
+	conn := client.InitMSLocalClient()
 	defer conn.Close()
 	cli := project.NewLocalClient(conn)
 	fpath := "D:\\GolangProjects\\src\\test\\gormt.exe"
-	err := cli.Upload(2, 7, fpath, pb_gen.FileType_binary)
+	err := cli.Upload(1, 1, fpath, pb_gen.FileType_binary)
 	if err != nil {
 		t.Errorf("client upload failed, err=[%v]", err)
 	}

@@ -14,6 +14,7 @@ import (
 	mongodb2 "MS_Local/utils/mongodb"
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"log"
 	"os"
@@ -32,22 +33,14 @@ type Uploader struct {
 func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
 	res := &pb_gen.UploadResponse{
 		ProjectInfo: nil,
-		Status:      pb_gen.ResponseStatus_fail,
-		Message:     "fail",
 	}
 	req, err := stream.Recv()
 	if err != nil {
-		res.Message = "cannot receive project info"
-		log.Printf(res.GetMessage())
-		stream.SendAndClose(res)
 		return err
 	}
 	metadata := req.GetMetadata()
 	fpath, err := u.receiveStream(stream, metadata)
 	if err != nil {
-		res.Message = "upload chunk, failed receive stream"
-		log.Printf(res.GetMessage())
-		stream.SendAndClose(res)
 		return err
 	}
 
@@ -59,17 +52,29 @@ func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
 		err = u.SaveCodes(fpath, metadata)
 	}
 	if err != nil {
-		res.Message = "save to database failed"
-		log.Printf(res.GetMessage())
-		stream.SendAndClose(res)
 		return err
 	}
 	if fpath != "" {
 		os.Remove(fpath)
 	}
-	res.Status = pb_gen.ResponseStatus_ok
-	res.Message = "success"
-
+	pro, err := project.GetProjectById(mysql.Mysql, metadata.ProjectId)
+	if err != nil {
+		return err
+	}
+	res.ProjectInfo = &pb_gen.Project{
+		Id:          pro.ID,
+		ProjectName: pro.ProjectName,
+		UserId:      pro.UserID,
+		Tags:        pro.Tags,
+		License:     pro.License,
+		Updatetime: &timestamppb.Timestamp{
+			Seconds: pro.UpdateTime.Unix(),
+			Nanos:   0,
+		},
+		ProjectDescription: pro.ProjectDescription,
+		CodeAddr:           pro.CodeAddr,
+		BinaryAddr:         pro.BinaryAddr,
+	}
 	err = stream.SendAndClose(res)
 	if err != nil {
 		log.Printf("cannot send response: err=[%v]", err)
@@ -119,12 +124,15 @@ func (u *Uploader) receiveStream(stream pb_gen.MSLocal_UploadServer, metadata *p
 
 //文件名必须，创建时间和大小似乎无所谓,不如保存上传时间
 func (u *Uploader) SaveBinary(fpath string, metadata *pb_gen.UploadMetadata) error {
+	//delete old
+	DeleteBinary(metadata.ProjectId)
 	//add to mongodb
 	binary_id, err := u.SaveFile(fpath, metadata, pb_gen.FileType_binary)
 	if err != nil {
 		log.Printf("add binary to database failed: %v", err)
 		return err
 	}
+
 	//update project
 	err = project.UpdateProject(mysql.Mysql, metadata.GetProjectId(), map[string]interface{}{model2.ProjectColumns.BinaryAddr: mongodb2.ObjectId2String(*binary_id)})
 	if err != nil {
@@ -139,6 +147,10 @@ func (u *Uploader) SaveCodes(fpath string, metadata *pb_gen.UploadMetadata) erro
 	//temp := fmt.Sprintf("extracted_%d", time.Now().UnixNano())
 	//tempDir, err := os.MkdirTemp(config.TempFilePath, fmt.Sprintf("extracted_%d", time.Now().UnixNano()))
 	//tempDir, err := os.MkdirTemp(config.TempFilePath, temp)
+
+	//delete old
+	DeleteCodes(metadata.ProjectId)
+
 	tempDir, err := os.MkdirTemp(config.TempFilePath, "extracted_upload")
 	if err != nil {
 		log.Printf("create temp dir error, err=%v", err)

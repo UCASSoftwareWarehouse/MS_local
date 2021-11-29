@@ -1,7 +1,15 @@
 package MS_Local
 
-import "fmt"
+import (
+	"MS_Local/config"
+	"MS_Local/mongodb"
+	"MS_Local/mysql"
+	"MS_Local/server"
+)
 
-func main(){
-	fmt.Println("hello world!")
+func main() {
+	config.InitConfig()
+	mysql.InitMysql()
+	mongodb.InitMongo()
+	server.StartServe()
 }

@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	config2 "MS_Local/config"
+	"MS_Local/config"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"log"
@@ -13,11 +13,12 @@ import (
 var Mysql *gorm.DB
 
 // InitMysql 数据库连接
-func InitMysql() (*gorm.DB, error) {
-	var DB *gorm.DB
+func InitMysql() error {
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
-		config2.MysqlUser, config2.MysqlPassword, config2.MysqlHost, config2.MysqlPort, config2.MysqlDatabase, config2.MysqlCharset)
+	//dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
+	//	config2.MysqlUser, config2.MysqlPassword, config2.MysqlHost, config2.MysqlPort, config2.MysqlDatabase, config2.MysqlCharset)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=true",
+		config.Conf.MysqlUser, config.Conf.MysqlPwd, config.Conf.MysqlAddr, config.Conf.MysqlDb, "utf8")
 
 	config := mysql.Config{
 		DSN:                       dsn,
@@ -34,5 +35,5 @@ func InitMysql() (*gorm.DB, error) {
 		log.Fatal("test")
 	}
 	Mysql = DB
-	return DB, err
+	return err
 }

@@ -22,7 +22,10 @@ func (s *MSLocalServer) DeleteProject(ctx context.Context, req *pb_gen.DeletePro
 	return project.Delete(ctx, req)
 }
 
-//
-//func (s *MSLocalServer) SearchProject(req *pb_gen.SearchProjectRequest, stream pb_gen.MSLocal_SearchProjectServer) error{
-//
-//}
+func (s *MSLocalServer) SearchProject(req *pb_gen.SearchProjectRequest, stream pb_gen.MSLocal_SearchProjectServer) error {
+	return project.SearchProject(req, stream)
+}
+
+func (s *MSLocalServer) GetProject(req *pb_gen.GetProjectRequest, stream pb_gen.MSLocal_GetProjectServer) error {
+	return project.GetProject(req, stream)
+}

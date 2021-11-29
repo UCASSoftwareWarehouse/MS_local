@@ -14,8 +14,8 @@ import (
 )
 
 func TestAddCode(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.CodeCollection)
+	config.InitConfig()
+	mongodb.InitMongo()
 
 	code := &model.Code{
 		//FileID: primitive.NewObjectID(),
@@ -26,7 +26,7 @@ func TestAddCode(t *testing.T) {
 		UpdateTime: mongodb2.Time2Timestamp(time.Now()),
 		Content:    []byte("hello mongodb"),
 	}
-	id, err := AddCode(context.Background(), collection, code)
+	id, err := AddCode(context.Background(), mongodb.CodeCol, code)
 	if err != nil {
 		t.Errorf("add code file error: %s", err)
 	}
@@ -73,9 +73,9 @@ func TestAddCode(t *testing.T) {
 //}
 
 func TestGetCodeByProjectId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.CodeCollection)
-	code, err := GetCodeByProjectId(context.Background(), collection, 2)
+	config.InitConfig()
+	mongodb.InitMongo()
+	code, err := GetCodeByProjectId(context.Background(), mongodb.CodeCol, 2)
 	if err != nil {
 		t.Errorf("test get codes by projectid failded")
 	}
@@ -83,10 +83,10 @@ func TestGetCodeByProjectId(t *testing.T) {
 }
 
 func TestGetCodeByFileId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.CodeCollection)
+	config.InitConfig()
+	mongodb.InitMongo()
 	var stringid = "619ddde40b7639bceaa6cab1"
-	code, err := GetCodeByFileId(context.Background(), collection, mongodb2.String2ObjectId(stringid))
+	code, err := GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(stringid))
 	if err != nil {
 		t.Errorf("test get code by file id")
 	}
@@ -118,10 +118,10 @@ func TestGetCodeByFileId(t *testing.T) {
 //}
 
 func TestDeleteOneCodeByFileId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.CodeCollection)
+	config.InitConfig()
+	mongodb.InitMongo()
 	var stringid = "619ddde40b7639bceaa6cab1"
-	err := DeleteOneCodeByFileId(context.Background(), *collection, mongodb2.String2ObjectId(stringid))
+	err := DeleteOneCodeByFileId(context.Background(), *mongodb.CodeCol, mongodb2.String2ObjectId(stringid))
 
 	if err != nil {
 		t.Errorf("test delete one code failed")
@@ -129,9 +129,10 @@ func TestDeleteOneCodeByFileId(t *testing.T) {
 }
 
 func TestDeleteManyCodesByProjectId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.CodeCollection)
-	err := DeleteManyCodesByProjectId(context.Background(), collection, 2)
+	config.InitConfig()
+	mongodb.InitMongo()
+
+	err := DeleteManyCodesByProjectId(context.Background(), mongodb.CodeCol, 2)
 	if err != nil {
 		t.Errorf("test delete many by projectID failed")
 	}

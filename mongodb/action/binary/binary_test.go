@@ -13,8 +13,8 @@ import (
 )
 
 func TestAddBinary(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
+	config.InitConfig()
+	mongodb.InitMongo()
 
 	binary := model.Binary{
 		//FileID: primitive.NewObjectID(),
@@ -24,7 +24,7 @@ func TestAddBinary(t *testing.T) {
 		UpdateTime: mongodb2.Time2Timestamp(time.Now()),
 		Content:    []byte("hello mongodb"),
 	}
-	id, err := AddBinary(context.TODO(), collection, &binary)
+	id, err := AddBinary(context.TODO(), mongodb.BinaryCol, &binary)
 	if err != nil {
 		t.Errorf("add code file error: %s", err)
 	}
@@ -71,9 +71,9 @@ func TestAddBinary(t *testing.T) {
 //}
 
 func TestGetBinaryByProjectId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
-	binary, err := GetBinaryByProjectId(context.Background(), collection, 7)
+	config.InitConfig()
+	mongodb.InitMongo()
+	binary, err := GetBinaryByProjectId(context.Background(), mongodb.BinaryCol, 7)
 	if err != nil {
 		t.Errorf("test get binary by projectid failded")
 	}
@@ -81,10 +81,10 @@ func TestGetBinaryByProjectId(t *testing.T) {
 }
 
 func TestGetBinaryByFileId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
+	config.InitConfig()
+	mongodb.InitMongo()
 	var stringid = "619d2218e9f25f10df00a109"
-	binary, err := GetBinaryByFileId(context.Background(), collection, mongodb2.String2ObjectId(stringid))
+	binary, err := GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(stringid))
 	if err != nil {
 		t.Errorf("test get codefile by file id")
 	}
@@ -116,19 +116,19 @@ func TestGetBinaryByFileId(t *testing.T) {
 //}
 
 func TestDeleteOneBinaryByFileId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
+	config.InitConfig()
+	mongodb.InitMongo()
 	var stringid = "619dda3a215c2f4ed65ff317"
-	err := DeleteOneBinaryByFileId(context.Background(), collection, mongodb2.String2ObjectId(stringid))
+	err := DeleteOneBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(stringid))
 	if err != nil {
 		t.Errorf("test delete one codefile failed")
 	}
 }
 
 func TestDeleteBinaryByProjectId(t *testing.T) {
-	db, _ := mongodb.InitMongo()
-	collection := mongodb.GetCollectionFromMongo(db, config.BinaryCollection)
-	err := DeleteBinaryByProjectId(context.Background(), collection, 10)
+	config.InitConfig()
+	mongodb.InitMongo()
+	err := DeleteBinaryByProjectId(context.Background(), mongodb.BinaryCol, 10)
 	if err != nil {
 		t.Errorf("test delete by project id failed")
 	}

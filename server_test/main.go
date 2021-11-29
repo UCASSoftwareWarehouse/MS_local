@@ -1,10 +1,11 @@
 package main
 
 import (
+	"MS_Local/config"
 	"MS_Local/mongodb"
 	"MS_Local/mysql"
 	"MS_Local/pb_gen"
-	"MS_Local/routes"
+	"MS_Local/server/routes"
 	"google.golang.org/grpc"
 
 	"log"
@@ -28,11 +29,12 @@ const (
 //}
 
 func main() {
-	_, err := mysql.InitMysql()
+	config.InitConfig()
+	err := mysql.InitMysql()
 	if err != nil {
 		log.Fatalf("init mysql error:[%v]", err)
 	}
-	_, err = mongodb.InitMongo()
+	err = mongodb.InitMongo()
 	if err != nil {
 		log.Fatalf("init mongodb error:[%v]", err)
 	}

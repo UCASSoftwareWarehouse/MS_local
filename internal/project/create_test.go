@@ -1,15 +1,15 @@
 package project
 
 import (
+	"MS_Local/client"
 	"MS_Local/pb_gen"
-	"MS_Local/server"
 	"context"
 	"log"
 	"testing"
 )
 
 func TestCreateProject(t *testing.T) {
-	conn := server.InitMSLocalClient()
+	conn := client.InitMSLocalClient()
 	cli := pb_gen.NewMSLocalClient(conn)
 	defer conn.Close()
 
@@ -24,6 +24,5 @@ func TestCreateProject(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not greet:%v", err)
 	}
-	log.Printf("create project:%s", res1.GetMessage())
 	log.Printf("project info:\n %v", res1.ProjectInfo)
 }
