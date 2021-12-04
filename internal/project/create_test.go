@@ -19,6 +19,7 @@ func TestCreateProject(t *testing.T) {
 		UserId:             2,
 		Tags:               "v1.0",
 		License:            "test_liscense",
+		Classifiers:        0,
 		ProjectDescription: "this is a project",
 	})
 	if err != nil {

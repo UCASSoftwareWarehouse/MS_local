@@ -17,7 +17,7 @@ func SearchProject(req *pb_gen.SearchProjectRequest, stream pb_gen.MSLocal_Searc
 			return err
 		}
 	} else {
-		err := project.SearchProjectByName(mysql.Mysql, req.KeyWord, int(req.Limit), int(req.Page),
+		err := project.SearchProjectByName(mysql.Mysql, req.KeyWord, int(req.Limit), int(req.Page), req.Classifiers,
 			&pros)
 		if err != nil {
 			return err

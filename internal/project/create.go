@@ -21,12 +21,16 @@ func CreateProject(ctx context.Context, req *pb_gen.CreateProjectRequest) (*pb_g
 	}
 
 	tmp_project := model.Project{
-		ProjectName:        req.ProjectName,
-		UserID:             req.UserId,
-		Tags:               req.Tags,
-		License:            req.License,
-		UpdateTime:         time.Now(),
-		ProjectDescription: req.ProjectDescription,
+		ProjectName:         req.ProjectName,
+		UserID:              req.UserId,
+		Tags:                req.Tags,
+		License:             req.License,
+		UpdateTime:          time.Now(),
+		ProjectDescription:  req.ProjectDescription,
+		OperatingSystem:     utils.GetOSValue(req.Classifiers),
+		ProgrammingLanguage: utils.GetPLValue(req.Classifiers),
+		NaturalLanguage:     utils.GetNLValue(req.Classifiers),
+		Topic:               utils.GetToVaule(req.Classifiers),
 	}
 
 	pid, err := project.AddProject(mysql.Mysql, tmp_project)
@@ -44,6 +48,7 @@ func CreateProject(ctx context.Context, req *pb_gen.CreateProjectRequest) (*pb_g
 			License:            req.License,
 			Updatetime:         utils.Time2Timestamp(tmp_project.UpdateTime),
 			ProjectDescription: req.ProjectDescription,
+			Classifiers:        req.Classifiers,
 			CodeAddr:           "",
 			BinaryAddr:         "",
 		},

@@ -32,65 +32,7 @@ message FileInfo{
 }
 
 
-message User{
-  uint64 id = 1;
-  string name=2;
-  string password=3;
-}
 
-message RegisterUserRequest{
-  string name = 1;
-  string password = 2;
-}
-
-message RegisterUserResponse{
-  User user = 1;
-}
-
-message LoginUserRequest{
-  string name = 1;
-  string password = 2;
-}
-
-message LoginUserResponse{
-  string token = 1;
-}
-
-message GetUserRequest{
-  uint64 id = 1;
-}
-
-message DeleteUserRequest{
-  uint64 id = 1;
-  string name = 2;
-  string password = 3;
-}
-
-enum UpdateType{
-  uname = 0;
-  upwd = 1;
-  all = 2;
-}
-
-
-message UpdateUserRequest{
-  uint64  uid = 1;
-  UpdateType type = 2;
-  string newName = 3;
-  string newPassword=4;
-}
-
-message GetUserResponse{
-  User user = 1;
-}
-
-message DeleteUserResponse{
-  string message = 1;
-}
-
-message UpdateUserResponse{
-  User user = 1;
-}
 
 message Project{
   uint64 id = 1;
@@ -102,6 +44,7 @@ message Project{
   string projectDescription =7;
   string codeAddr = 8;
   string binaryAddr = 9;
+  uint32 classifiers = 10;
 }
 
 message CreateProjectRequest{
@@ -112,6 +55,7 @@ message CreateProjectRequest{
   string license = 4;
   //  google.protobuf.Timestamp Updatetime = 6;
   string projectDescription =5;
+  uint32 classifiers = 6;
   //  string CodeAddr = 8;
   //  string BinaryAddr = 9;
 }
@@ -133,6 +77,7 @@ message SearchProjectRequest{
   uint32 page = 1;
   uint32 limit = 2;
   string keyWord = 3;
+  uint32 classifiers = 4;
 }
 
 message SearchProjectResponse{
@@ -198,4 +143,131 @@ message HelloRequest {
 
 message HelloReply {
   string message = 1;
+}
+
+//3bit
+enum OperatingSystem{
+  OperatingSystemNull = 0;
+  Android = 1;
+  Windows = 2;
+  Linux = 3;
+  MacOs = 4;
+  OS_independent = 5;
+  OtherOS = 255;
+}
+
+//5bit
+enum ProgrammingLanguage{
+  ProgrammingLanguageNull = 0;
+  Python = 1;
+  Java = 2;
+  JavaScript = 3;
+  CAndCPlusPlus = 4;
+  PHP = 5;
+  R = 6;
+  Swift = 7;
+  Kotlin = 8;
+  Matlab = 9;
+  Go = 10;
+  Rust = 11;
+  Ruby = 12;
+  OtherPL = 255;
+}
+//5bit
+enum NaturalLanguage{
+  LanguageNull = 0;
+  English = 1;
+  Chinese = 2;
+  OtherNL = 255;
+}
+
+//5bit Topic
+enum Topic{
+  TopicNull = 0;
+  AdativeTechnologies = 1;
+  ArtisticSoftware = 2;
+  Communication = 3;
+  Database = 4;
+  DesktopEnvironment = 5;
+  Documentation = 6;
+  Education = 7;
+  Games = 8;
+  HomeAutomation = 9;
+  Internet = 10;
+  MultiMedia = 11;
+  Office = 12;
+  Printing = 13;
+  Religion = 14;
+  Scientific = 15;
+  Security = 16;
+  Sociology = 17;
+  SoftWareDevelopment = 18;
+  System = 19;
+  Terminals = 20;
+  TextEditors =21;
+  TextProcessing = 22;
+  Utilities = 23;
+  OtherTp = 255;
+}
+
+
+
+message User{
+  uint64 id = 1;
+  string name=2;
+  string password=3;
+}
+
+message RegisterUserRequest{
+  string name = 1;
+  string password = 2;
+}
+
+message RegisterUserResponse{
+  User user = 1;
+}
+
+message LoginUserRequest{
+  string name = 1;
+  string password = 2;
+}
+
+message LoginUserResponse{
+  string token = 1;
+}
+
+message GetUserRequest{
+  uint64 id = 1;
+}
+
+message DeleteUserRequest{
+  uint64 id = 1;
+  string name = 2;
+  string password = 3;
+}
+
+enum UpdateType{
+  uname = 0;
+  upwd = 1;
+  all = 2;
+}
+
+
+message UpdateUserRequest{
+  uint64  uid = 1;
+  UpdateType type = 2;
+  string newName = 3;
+  string newPassword=4;
+}
+
+message GetUserResponse{
+  User user = 1;
+}
+
+message DeleteUserResponse{
+  string message = 1;
+}
+
+message UpdateUserResponse{
+  User user = 1;
 }

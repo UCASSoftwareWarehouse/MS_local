@@ -2,6 +2,9 @@ dev:
   app_name: "MS_Local"
   host: "127.0.0.1"
   port: 50051
+  consul_addr : "http://127.0.0.1:8500"
+
+  network_interface: "eth2"
   mysql_addr: "127.0.0.1:3306"
   mysql_user: "root"
   mysql_pwd: "Guohao729"

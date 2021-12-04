@@ -14,7 +14,7 @@ var Mysql *gorm.DB
 
 // InitMysql 数据库连接
 func InitMysql() error {
-
+	log.Printf("init mysql....")
 	//dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
 	//	config2.MysqlUser, config2.MysqlPassword, config2.MysqlHost, config2.MysqlPort, config2.MysqlDatabase, config2.MysqlCharset)
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=true",
@@ -35,5 +35,6 @@ func InitMysql() error {
 		log.Fatal("test")
 	}
 	Mysql = DB
+
 	return err
 }

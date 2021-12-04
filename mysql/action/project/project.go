@@ -2,6 +2,8 @@ package project
 
 import (
 	"MS_Local/mysql/model"
+	"MS_Local/utils"
+	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"log"
@@ -74,14 +76,37 @@ func GetProjectsByUserId(db *gorm.DB, userId uint64, limit int, page int, projec
 	return nil
 }
 
-func SearchProjectByName(db *gorm.DB, keyword string, limit int, page int, projects *[]model.Project) error {
+func SearchProjectByName(db *gorm.DB, keyword string, limit int, page int, classier uint32, projects *[]model.Project) error {
 	//basedon like
 	//pattern := strings.Join([]string{"%", keyword, "%"}, "")
-	offset := (page - 1) * limit
 	//filter := db.Limit(limit).Where("project_name LIKE ?", pattern).Offset(offset)
-	dislimit := 5
-	filter := db.Limit(limit).Where("levenshtein(project_name,?)<?", keyword, dislimit).Offset(offset)
 	//err := filter.Find(projects).Error
+
+	dislimit := 10
+	query := fmt.Sprintf("levenshtein(%s,?)<?", model.ProjectColumns.ProjectName)
+
+	osValue := utils.GetOSValue(classier)
+	if osValue != 0 {
+		query += fmt.Sprintf(" AND %s = %d", model.ProjectColumns.OperatingSystem, osValue)
+	}
+
+	plValue := utils.GetPLValue(classier)
+	if plValue != 0 {
+		query += fmt.Sprintf(" AND %s = %d", model.ProjectColumns.ProgrammingLanguage, plValue)
+	}
+
+	nlValue := utils.GetNLValue(classier)
+	if nlValue != 0 {
+		query += fmt.Sprintf(" AND %s = %d", model.ProjectColumns.NaturalLanguage, nlValue)
+	}
+	toValue := utils.GetToVaule(classier)
+	if utils.GetToVaule(classier) != 0 {
+		query += fmt.Sprintf(" AND %s = %d", model.ProjectColumns.Topic, toValue)
+	}
+	offset := (page - 1) * limit
+	filter := db.Limit(limit).Where(query, keyword, dislimit).Offset(offset)
+	//filter := db.Limit(limit).Where("levenshtein(project_name,?)<?", keyword, dislimit).Offset(offset)
+
 	err := filter.Clauses(clause.OrderBy{
 		Expression: clause.Expr{SQL: "levenshtein(project_name,?)", Vars: []interface{}{keyword}, WithoutParentheses: true},
 	}).Find(projects).Error

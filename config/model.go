@@ -4,6 +4,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"runtime"
 )
 
 type ConfigurationEnv string
@@ -16,25 +17,36 @@ const (
 type Configuration map[ConfigurationEnv]*EachConfig
 
 type EachConfig struct {
-	AppName       string `yaml:"app_name"`
-	Host          string `yaml:"host"`
-	Port          int    `yaml:"port"`
-	MongodbAddr   string `yaml:"mongodb_addr"`
-	MongodbUser   string `yaml:"mongodb_user"`
-	MongodbPwd    string `yaml:"mongodb_pwd"`
-	MongodbDb     string `yaml:"mongodb_db"`
-	MongodbBinary string `yaml:"mongodb_binary"`
-	MongodbCode   string `yaml:"mongodb_code"`
-	MysqlAddr     string `yaml:"mysql_addr"`
-	MysqlUser     string `yaml:"mysql_user"`
-	MysqlPwd      string `yaml:"mysql_pwd"`
-	MysqlDb       string `yaml:"mysql_db"`
+	AppName          string `yaml:"app_name"`
+	Host             string `yaml:"host"`
+	Port             int    `yaml:"port"`
+	ConsulAddr       string `yaml:"consul_addr"`
+	NetworkInterface string `yaml:"network_interface"`
+	MongodbAddr      string `yaml:"mongodb_addr"`
+	MongodbUser      string `yaml:"mongodb_user"`
+	MongodbPwd       string `yaml:"mongodb_pwd"`
+	MongodbDb        string `yaml:"mongodb_db"`
+	MongodbBinary    string `yaml:"mongodb_binary"`
+	MongodbCode      string `yaml:"mongodb_code"`
+	MysqlAddr        string `yaml:"mysql_addr"`
+	MysqlUser        string `yaml:"mysql_user"`
+	MysqlPwd         string `yaml:"mysql_pwd"`
+	MysqlDb          string `yaml:"mysql_db"`
 }
 
 const (
 	//DefaultConfigFilepath = "./config.yml"
 	DefaultConfigFilepath = "D:\\GolangProjects\\src\\MS_Local\\config.yml"
 )
+
+func (c *EachConfig) GetEnv() ConfigurationEnv {
+	log.Printf("RUNNING ON %s\n", runtime.GOOS)
+	if runtime.GOOS == "linux" {
+		return PrdEnv
+	} else {
+		return DevEnv
+	}
+}
 
 func Parse(configFilepath string) Configuration {
 	println()

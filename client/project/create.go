@@ -7,12 +7,13 @@ import (
 	"time"
 )
 
-func (cli *LocalClient) Create(projectName string, uid uint64, tags string, license string, projectDescription string) error {
+func (cli *LocalClient) Create(projectName string, uid uint64, tags string, license string, projectDescription string, classifiers uint32) error {
 	req := &pb_gen.CreateProjectRequest{
 		ProjectName:        projectName,
 		UserId:             uid,
 		Tags:               tags,
 		License:            license,
+		Classifiers:        classifiers,
 		ProjectDescription: projectDescription,
 	}
 

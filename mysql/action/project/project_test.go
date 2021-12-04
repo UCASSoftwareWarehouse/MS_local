@@ -4,6 +4,7 @@ import (
 	"MS_Local/config"
 	"MS_Local/mysql"
 	"MS_Local/mysql/model"
+	"MS_Local/utils"
 	"MS_Local/utils/mongodb"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -16,14 +17,18 @@ func TestAddProject(t *testing.T) {
 	config.InitConfig()
 	mysql.InitMysql()
 	project := model.Project{
-		ProjectName:        "projectaaa",
-		UserID:             2,
-		Tags:               "v2.0.0",
-		CodeAddr:           "",
-		BinaryAddr:         "",
-		License:            "test license",
-		ProjectDescription: "test description",
-		UpdateTime:         time.Now(),
+		ProjectName:         "project",
+		UserID:              2,
+		Tags:                "v1.0.1",
+		CodeAddr:            "",
+		BinaryAddr:          "",
+		License:             "test license",
+		ProjectDescription:  "test description",
+		UpdateTime:          time.Now(),
+		OperatingSystem:     0,
+		ProgrammingLanguage: 1,
+		NaturalLanguage:     1,
+		Topic:               0,
 	}
 	id, err := AddProject(mysql.Mysql, project)
 	if err != nil {
@@ -109,7 +114,8 @@ func TestSearchProjectByName(t *testing.T) {
 	config.InitConfig()
 	mysql.InitMysql()
 	var projects []model.Project
-	err := SearchProjectByName(mysql.Mysql, "ject", 10, 1, &projects)
+	classifier := utils.GetClassifier(0, 1, 1, 0)
+	err := SearchProjectByName(mysql.Mysql, "ject", 10, 1, classifier, &projects)
 	if err != nil {
 		t.Errorf("err=[%v]", err)
 	}

@@ -16,6 +16,7 @@ var BinaryCol *mongo.Collection
 var CodeCol *mongo.Collection
 
 func InitMongo() error {
+	log.Printf("init mysql...")
 	var (
 		client   *mongo.Client
 		mongoURL = fmt.Sprintf("mongodb://%s", config.Conf.MongodbAddr)
