@@ -3,16 +3,17 @@ package project
 import (
 	"MS_Local/client"
 	"MS_Local/client/project"
+	"MS_Local/config"
 	"MS_Local/mongodb"
 	"MS_Local/mysql"
 	"MS_Local/pb_gen"
-	"MS_Local/utils"
 	"os"
 	"testing"
 )
 
 func TestUploader_SaveBinary(t *testing.T) {
 	var fpath string = "D:\\GolangProjects\\src\\test\\gormt.exe"
+	config.InitConfig()
 	mongodb.InitMongo()
 	mysql.InitMysql()
 	finfo, _ := os.Stat(fpath)
@@ -22,10 +23,8 @@ func TestUploader_SaveBinary(t *testing.T) {
 		//ProjectName: "test name",
 		FileInfo: &pb_gen.FileInfo{
 			FileName:   finfo.Name(),
-			FileSize:   uint64(finfo.Size()),
-			Updatetime: utils.Time2Timestamp(finfo.ModTime()),
+			FileType: pb_gen.FileType_binary,
 		},
-		FileType: pb_gen.FileType_binary,
 	}
 	err := uploader.SaveBinary(fpath, metadata)
 	if err != nil {
@@ -35,19 +34,19 @@ func TestUploader_SaveBinary(t *testing.T) {
 
 func TestUploader_SaveCodes(t *testing.T) {
 	var fpath string = "D:\\GolangProjects\\src\\test\\MS_RemoteCode-master.zip"
+	config.InitConfig()
 	mongodb.InitMongo()
 	mysql.InitMysql()
 	finfo, _ := os.Stat(fpath)
 	metadata := &pb_gen.UploadMetadata{
 		ProjectId: 1,
-		UserId:    1,
+		UserId:    2,
 		//ProjectName: "test name",
 		FileInfo: &pb_gen.FileInfo{
 			FileName:   finfo.Name(),
-			FileSize:   uint64(finfo.Size()),
-			Updatetime: utils.Time2Timestamp(finfo.ModTime()),
+			FileType: pb_gen.FileType_codes,
 		},
-		FileType: pb_gen.FileType_codes,
+
 	}
 	err := uploader.SaveCodes(fpath, metadata)
 	if err != nil {

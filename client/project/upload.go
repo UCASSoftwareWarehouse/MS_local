@@ -2,7 +2,6 @@ package project
 
 import (
 	"MS_Local/pb_gen"
-	"MS_Local/utils"
 	"bufio"
 	"context"
 	"google.golang.org/grpc"
@@ -50,10 +49,9 @@ func (cli *LocalClient) Upload(uid uint64, pid uint64, fpath string, fileType pb
 				//ProjectName: ,
 				FileInfo: &pb_gen.FileInfo{
 					FileName:   finfo.Name(),
-					FileSize:   uint64(finfo.Size()),
-					Updatetime: utils.Time2Timestamp(finfo.ModTime()),
+					FileType: fileType,
 				},
-				FileType: fileType,
+
 			},
 		},
 	}

@@ -4,32 +4,32 @@ import "google/protobuf/timestamp.proto";
 option go_package = "./pb_gen";
 service MSLocal {
   rpc SayHello(HelloRequest) returns (HelloReply){}
-  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse){}
-  rpc LoginUser(LoginUserRequest) returns(LoginUserResponse){}
-  rpc GetUser(GetUserRequest) returns (GetUserResponse){}
-  rpc DeleteUser(DeleteUserRequest)returns(DeleteUserResponse){}
-  rpc UpdateUser(UpdateUserRequest) returns(UpdateUserResponse){}
+  //  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse){}
+  //  rpc LoginUser(LoginUserRequest) returns(LoginUserResponse){}
+  //  rpc GetUser(GetUserRequest) returns (GetUserResponse){}
+  //  rpc DeleteUser(DeleteUserRequest)returns(DeleteUserResponse){}
+  //  rpc UpdateUser(UpdateUserRequest) returns(UpdateUserResponse){}
   //   project
   rpc CreateProject(CreateProjectRequest) returns(CreateProjectResponse){}
   rpc DeleteProject(DeleteProjectRequest) returns(DeleteProjectResponse){}
   rpc Upload(stream UploadRequest) returns(UploadResponse){}
-  rpc GetProject(GetProjectRequest) returns(stream GetProjectResponse){}
+  rpc GetUserProjects(GetUserProjectsRequest) returns(stream GetUserProjectsResponse){}
   rpc Download(DownloadRequest) returns(stream DownloadResponse){}
   rpc SearchProject(SearchProjectRequest) returns(stream SearchProjectResponse){}
+  rpc GetCodes(GetCodesRequest)returns(stream GetCodesResponse){}
+  rpc GetProject(GetProjectRequest)returns(GetProjectResponse){}
+
 }
 
 enum FileType{
   project = 0;
   codes = 1;
   binary = 2;
-  code = 3;
+  code_dir = 3;
+  code_file = 4;
 }
 
-message FileInfo{
-  string fileName = 1;
-  uint64 fileSize = 2;
-  google.protobuf.Timestamp updatetime = 3;
-}
+
 
 
 
@@ -41,7 +41,7 @@ message Project{
   string tags = 4;
   string license = 5;
   google.protobuf.Timestamp updatetime = 6;
-  string projectDescription =7;
+  string projectDescription = 7;
   string codeAddr = 8;
   string binaryAddr = 9;
   uint32 classifiers = 10;
@@ -54,7 +54,7 @@ message CreateProjectRequest{
   string tags = 3;
   string license = 4;
   //  google.protobuf.Timestamp Updatetime = 6;
-  string projectDescription =5;
+  string projectDescription = 5;
   uint32 classifiers = 6;
   //  string CodeAddr = 8;
   //  string BinaryAddr = 9;
@@ -64,12 +64,12 @@ message CreateProjectResponse{
   Project projectInfo = 1;
 }
 
-message GetProjectRequest{
+message GetUserProjectsRequest{
   uint64 uid = 1;
   uint32 page = 2;
   uint32 limit = 3;
 }
-message GetProjectResponse{
+message GetUserProjectsResponse{
   Project projectInfo = 1;
 }
 
@@ -94,12 +94,28 @@ message DeleteProjectResponse{
   string message = 1;
 }
 
+message GetProjectRequest{
+  uint64 pid = 1;
+  uint64 uid = 2;
+}
+
+message GetProjectResponse{
+  Project projectInfo = 1;
+}
+
+message FileInfo{
+  string fileName = 1;
+  FileType fileType = 2;
+  //  uint64 fileSize = 2;
+  //  google.protobuf.Timestamp updatetime = 3;
+}
+
 
 message UploadMetadata{
   uint64 projectId = 1;
   uint64 userId = 2;
   FileInfo fileInfo = 3;
-  FileType fileType = 4;
+//  FileType fileType = 4;
 }
 message UploadRequest{
   oneof data{
@@ -114,12 +130,15 @@ message UploadResponse{
 
 message DownloadRequest{
   string fileId = 1;
+  //  uint64 projectId = 1;
   uint64 userId = 2;
-  FileType fileType = 3;
+  uint64 projectId = 3;
+  FileType fileType = 4;
+
 }
 message DownloadMetadate{
   FileInfo fileInfo = 1;
-  FileType fileType = 2;
+//  FileType fileType = 2;
 }
 message DownloadResponse{
   oneof data{
@@ -127,6 +146,23 @@ message DownloadResponse{
     bytes content = 2;
   }
 }
+
+//default page 1, limit = 50
+message GetCodesRequest{
+  uint64 pid = 1;
+  uint64 uid = 2;
+  string fid = 3;
+  uint32 page = 4;
+  uint32 limit = 5;
+}
+
+
+message GetCodesResponse{
+  FileInfo fileInfo = 1;
+  string fid = 2;
+}
+
+
 //message UserRegisterResponse{
 //   User registeredUser=1;
 //   Error error =2;
@@ -145,7 +181,7 @@ message HelloReply {
   string message = 1;
 }
 
-//3bit
+//8bit
 enum OperatingSystem{
   OperatingSystemNull = 0;
   Android = 1;
@@ -156,7 +192,10 @@ enum OperatingSystem{
   OtherOS = 255;
 }
 
-//5bit
+
+
+
+//8bit
 enum ProgrammingLanguage{
   ProgrammingLanguageNull = 0;
   Python = 1;
@@ -173,7 +212,7 @@ enum ProgrammingLanguage{
   Ruby = 12;
   OtherPL = 255;
 }
-//5bit
+//8bit
 enum NaturalLanguage{
   LanguageNull = 0;
   English = 1;
@@ -181,7 +220,7 @@ enum NaturalLanguage{
   OtherNL = 255;
 }
 
-//5bit Topic
+//8bit Topic
 enum Topic{
   TopicNull = 0;
   AdativeTechnologies = 1;
@@ -204,7 +243,7 @@ enum Topic{
   SoftWareDevelopment = 18;
   System = 19;
   Terminals = 20;
-  TextEditors =21;
+  TextEditors = 21;
   TextProcessing = 22;
   Utilities = 23;
   OtherTp = 255;
@@ -212,62 +251,62 @@ enum Topic{
 
 
 
-message User{
-  uint64 id = 1;
-  string name=2;
-  string password=3;
-}
-
-message RegisterUserRequest{
-  string name = 1;
-  string password = 2;
-}
-
-message RegisterUserResponse{
-  User user = 1;
-}
-
-message LoginUserRequest{
-  string name = 1;
-  string password = 2;
-}
-
-message LoginUserResponse{
-  string token = 1;
-}
-
-message GetUserRequest{
-  uint64 id = 1;
-}
-
-message DeleteUserRequest{
-  uint64 id = 1;
-  string name = 2;
-  string password = 3;
-}
-
-enum UpdateType{
-  uname = 0;
-  upwd = 1;
-  all = 2;
-}
-
-
-message UpdateUserRequest{
-  uint64  uid = 1;
-  UpdateType type = 2;
-  string newName = 3;
-  string newPassword=4;
-}
-
-message GetUserResponse{
-  User user = 1;
-}
-
-message DeleteUserResponse{
-  string message = 1;
-}
-
-message UpdateUserResponse{
-  User user = 1;
-}
+//message User{
+//  uint64 id = 1;
+//  string name=2;
+//  string password=3;
+//}
+//
+//message RegisterUserRequest{
+//  string name = 1;
+//  string password = 2;
+//}
+//
+//message RegisterUserResponse{
+//  User user = 1;
+//}
+//
+//message LoginUserRequest{
+//  string name = 1;
+//  string password = 2;
+//}
+//
+//message LoginUserResponse{
+//  string token = 1;
+//}
+//
+//message GetUserRequest{
+//  uint64 id = 1;
+//}
+//
+//message DeleteUserRequest{
+//  uint64 id = 1;
+//  string name = 2;
+//  string password = 3;
+//}
+//
+//enum UpdateType{
+//  uname = 0;
+//  upwd = 1;
+//  all = 2;
+//}
+//
+//
+//message UpdateUserRequest{
+//  uint64  uid = 1;
+//  UpdateType type = 2;
+//  string newName = 3;
+//  string newPassword=4;
+//}
+//
+//message GetUserResponse{
+//  User user = 1;
+//}
+//
+//message DeleteUserResponse{
+//  string message = 1;
+//}
+//
+//message UpdateUserResponse{
+//  User user = 1;
+//}

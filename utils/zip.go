@@ -4,10 +4,7 @@ import (
 	"MS_Local/config"
 	"archive/zip"
 	"fmt"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -100,16 +97,16 @@ func Unzip(zipFile string, destDir string) (string, error) {
 			}
 		}
 	}
-	files, err := os.ReadDir(destDir)
-	if err != nil {
-		return "", err
-	}
-	if len(files) != 1 {
-		log.Printf("unzip should contain only directory, not %d", len(files))
-		return "", status.Errorf(codes.Internal, fmt.Sprintf("unzip should contain only directory, not %d", len(files)))
-	}
+	//files, err := os.ReadDir(destDir)
+	//if err != nil {
+	//	return "", err
+	//}
+	//if len(files) != 1 {
+	//	log.Printf("unzip should contain only directory, not %d files", len(files))
+	//	return "", status.Errorf(codes.Internal, fmt.Sprintf("unzip should contain only directory, not %d files", len(files)))
+	//}
 
-	fpath := filepath.Join(destDir, files[0].Name())
-	log.Printf("unzip success, file path is %v", fpath)
-	return fpath, nil
+	//fpath := filepath.Join(destDir, files[0].Name())
+	//log.Printf("unzip success, file path is %v", fpath)
+	return destDir, nil
 }

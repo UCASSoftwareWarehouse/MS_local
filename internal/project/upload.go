@@ -19,6 +19,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func Upload(stream pb_gen.MSLocal_UploadServer) error {
@@ -44,10 +45,10 @@ func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
 		return err
 	}
 
-	if metadata.GetFileType() == pb_gen.FileType_binary {
+	if metadata.FileInfo.FileType == pb_gen.FileType_binary {
 		log.Printf("receive %d's project %d", metadata.UserId, metadata.ProjectId)
 		err = u.SaveBinary(fpath, metadata)
-	} else if metadata.GetFileType() == pb_gen.FileType_codes {
+	} else if metadata.FileInfo.FileType == pb_gen.FileType_codes {
 		log.Printf("receive %d's project %d", metadata.UserId, metadata.ProjectId)
 		err = u.SaveCodes(fpath, metadata)
 	}
@@ -156,10 +157,26 @@ func (u *Uploader) SaveCodes(fpath string, metadata *pb_gen.UploadMetadata) erro
 		log.Printf("create temp dir error, err=%v", err)
 		return err
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		err = os.RemoveAll(tempDir)
+		if err!=nil{
+			log.Printf("delete temp dir  error, err=[%v]", err)
+		}
+	}()
 	log.Printf("savecodes:create temp dir success!")
+	//create dir for zip file
+	zipname := metadata.FileInfo.FileName
+	if strings.HasSuffix(zipname, ".zip"){
+		zipname = strings.Replace(zipname, ".zip", "", len(zipname)-4)
+	}
+	zpath :=filepath.Join(tempDir, zipname)
+	err = os.Mkdir(zpath, os.ModePerm)
+	if err != nil {
+		log.Printf("create zip file path error, err=[%v]", err)
+		return err
+	}
 	// unzip
-	codespath, err := utils.Unzip(fpath, tempDir)
+	codespath, err := utils.Unzip(fpath, zpath)
 	if err != nil {
 		log.Printf("unzip failed, err=[%v]", err)
 		return err
@@ -194,14 +211,14 @@ func (u *Uploader) SaveDir(dirpath string, metadata *pb_gen.UploadMetadata) (*pr
 		if file.IsDir() {
 			cid, err = u.SaveDir(tmpPath, metadata)
 		} else {
-			cid, err = u.SaveFile(filepath.Join(dirpath, file.Name()), metadata, pb_gen.FileType_code)
+			cid, err = u.SaveFile(filepath.Join(dirpath, file.Name()), metadata, pb_gen.FileType_code_file)
 		}
 		if err != nil {
 			log.Printf("save code file to db error, err=[%v]", err)
 		}
 		childFiles = append(childFiles, *cid)
 	}
-
+	//pb_gen.FileType_code_dir
 	temp_pid, err := code.AddCode(context.Background(), mongodb.CodeCol, &model.Code{
 		FileName:   dinfo.Name(),
 		ProjectID:  metadata.ProjectId,
@@ -234,14 +251,9 @@ func (u *Uploader) SaveFile(fpath string, metadata *pb_gen.UploadMetadata, filet
 		binfo := metadata.GetFileInfo() // binary file info come from request
 		bfile.FileName = binfo.FileName
 		bfile.ProjectID = metadata.ProjectId
-		bfile.FileSize = binfo.FileSize
-		bfile.UpdateTime = primitive.Timestamp{
-			T: uint32(binfo.Updatetime.Seconds),
-			I: uint32(binfo.Updatetime.Nanos),
-		}
 		bfile.Content = content
 		temp_id, err = binary.AddBinary(context.Background(), mongodb.BinaryCol, bfile)
-	} else if filetype == pb_gen.FileType_code {
+	} else if filetype == pb_gen.FileType_code_file {
 		//code file info come from file itself
 		temp_id, err = code.AddCode(context.Background(), mongodb.CodeCol, &model.Code{
 			FileName:   finfo.Name(),

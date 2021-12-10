@@ -14,7 +14,6 @@ import (
 	"context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"io"
 	"log"
 	"os"
@@ -27,10 +26,10 @@ func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer)
 	var fminfo *pb_gen.FileInfo
 	if req.FileType == pb_gen.FileType_binary {
 		fpath, fminfo, err = DownloadBinary(req.FileId, "")
-	} else if req.FileType == pb_gen.FileType_code {
+	} else if req.FileType == pb_gen.FileType_code_dir||req.FileType == pb_gen.FileType_code_file {//查看单个code内容
 		fpath, fminfo, err = DownloadCode(req.FileId, "")
 	} else if req.FileType == pb_gen.FileType_project {
-		fpath, fminfo, err = DownloadProject(req.FileId)
+		fpath, fminfo, err = DownloadProject(req.ProjectId)
 	} else if req.FileType == pb_gen.FileType_codes {
 		fpath, fminfo, err = DownloadCodes(req.FileId, "")
 	} else {
@@ -50,7 +49,7 @@ func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer)
 		Data: &pb_gen.DownloadResponse_Metadata{
 			Metadata: &pb_gen.DownloadMetadate{
 				FileInfo: fminfo,
-				FileType: req.FileType,
+				//FileType: req.FileType,
 			}}}
 	err = stream.Send(res)
 	if err != nil {
@@ -102,7 +101,7 @@ func SendStream(fpath string, stream pb_gen.MSLocal_DownloadServer) error {
 
 func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	//search file
-	//binaryfile, err := binary.GetBinaryByFileId(stream.Context(), mongodb.BinaryCol, mongodb2.String2ObjectId(fid))
+
 	binaryfile, err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(fid))
 	if err != nil {
 		return "", nil, err
@@ -133,11 +132,7 @@ func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) 
 	log.Printf("wirte binary to %v", fo.Name())
 	fminfo := &pb_gen.FileInfo{
 		FileName: binaryfile.FileName,
-		FileSize: binaryfile.FileSize,
-		Updatetime: &timestamppb.Timestamp{
-			Seconds: int64(binaryfile.UpdateTime.T),
-			Nanos:   int32(binaryfile.UpdateTime.I),
-		},
+		FileType: pb_gen.FileType_binary,
 	}
 	return fo.Name(), fminfo, nil
 }
@@ -149,11 +144,6 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	}
 	fminfo := &pb_gen.FileInfo{
 		FileName: codefile.FileName,
-		FileSize: codefile.FileSize,
-		Updatetime: &timestamppb.Timestamp{
-			Seconds: int64(codefile.UpdateTime.T),
-			Nanos:   int32(codefile.UpdateTime.I),
-		},
 	}
 	if codefile.FileType == 0 { //dir
 		var cdir string
@@ -176,7 +166,7 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 			}
 		}
 		log.Printf("download code dir(%s) usccess", codefile.FileName)
-
+		fminfo.FileType = pb_gen.FileType_code_dir
 		return cdir, fminfo, nil
 	} else if codefile.FileType == 1 { //file
 		var fo *os.File
@@ -202,6 +192,7 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 			return "", nil, err
 		}
 		log.Printf("wirte code to %v", fo.Name())
+		fminfo.FileType = pb_gen.FileType_code_file
 		return fo.Name(), fminfo, err
 	}
 	return "", nil, status.Errorf(codes.InvalidArgument, "no such filetype")
@@ -224,6 +215,8 @@ func DownloadCodes(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 		if err != nil {
 			log.Printf("zip failed, err=[%v]", err)
 		}
+		fminfo.FileName = fminfo.FileName+".zip"
+		fminfo.FileType = pb_gen.FileType_codes
 		return zpath, fminfo, nil
 	} else { //download到指定文件夹
 		codes_dir, fminfo, err := DownloadCode(fid, fpath)
@@ -234,15 +227,15 @@ func DownloadCodes(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	}
 }
 
-func DownloadProject(pid string) (string, *pb_gen.FileInfo, error) {
+func DownloadProject(pid uint64) (string, *pb_gen.FileInfo, error) {
 	tempDir, err := os.MkdirTemp(config.TempFilePath, "download_tempdir_")
 	if err != nil {
 		log.Printf("create temp dir error, err=%v", err)
 		return "", nil, err
 	}
 	defer os.RemoveAll(tempDir)
-	pid_ := utils.String2Uint64(pid)
-	project, err := project.GetProjectById(mysql.Mysql, pid_)
+
+	project, err := project.GetProjectById(mysql.Mysql, pid)
 	if err != nil {
 		return "", nil, err
 	}
@@ -262,12 +255,8 @@ func DownloadProject(pid string) (string, *pb_gen.FileInfo, error) {
 		log.Printf("zip failed, err=[%v]", err)
 	}
 	fminfo := &pb_gen.FileInfo{
-		FileName: project.ProjectName,
-		FileSize: 0,
-		Updatetime: &timestamppb.Timestamp{
-			Seconds: int64(project.UpdateTime.Unix()),
-			Nanos:   0,
-		},
+		FileName: project.ProjectName+".zip",
+		FileType: pb_gen.FileType_project,
 	}
 	return fpath, fminfo, nil
 }

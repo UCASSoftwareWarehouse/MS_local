@@ -26,6 +26,14 @@ func (s *MSLocalServer) SearchProject(req *pb_gen.SearchProjectRequest, stream p
 	return project.SearchProject(req, stream)
 }
 
-func (s *MSLocalServer) GetProject(req *pb_gen.GetProjectRequest, stream pb_gen.MSLocal_GetProjectServer) error {
-	return project.GetProject(req, stream)
+func (s *MSLocalServer) GetUserProjects(req *pb_gen.GetUserProjectsRequest, stream pb_gen.MSLocal_GetUserProjectsServer) error {
+	return project.GetUserProjects(req, stream)
 }
+func (s *MSLocalServer) GetCodes(req *pb_gen.GetCodesRequest, stream pb_gen.MSLocal_GetCodesServer) error {
+	return project.GetCodes(req, stream)
+}
+
+func (s *MSLocalServer)GetProject(ctx context.Context, req *pb_gen.GetProjectRequest)(*pb_gen.GetProjectResponse, error){
+	return project.GetProject(ctx, req)
+}
+
