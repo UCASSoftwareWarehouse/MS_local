@@ -16,9 +16,9 @@ func TestCreateProject(t *testing.T) {
 	//test create project
 	res1, err := cli.CreateProject(context.Background(), &pb_gen.CreateProjectRequest{
 		ProjectName:        "project1",
-		UserId:             2,
+		UserId:             1,
 		Tags:               "v1.0",
-		License:            "test_liscense",
+		License:            "liscense",
 		Classifiers:        0,
 		ProjectDescription: "this is a project",
 	})

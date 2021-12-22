@@ -32,6 +32,7 @@ type Uploader struct {
 }
 
 func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
+	log.Println("UPLOAD: start")
 	res := &pb_gen.UploadResponse{
 		ProjectInfo: nil,
 	}
@@ -46,10 +47,10 @@ func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
 	}
 
 	if metadata.FileInfo.FileType == pb_gen.FileType_binary {
-		log.Printf("receive %d's project %d", metadata.UserId, metadata.ProjectId)
+		log.Printf("UPLOAD: receive %d's project %d, upload binary", metadata.UserId, metadata.ProjectId)
 		err = u.SaveBinary(fpath, metadata)
 	} else if metadata.FileInfo.FileType == pb_gen.FileType_codes {
-		log.Printf("receive %d's project %d", metadata.UserId, metadata.ProjectId)
+		log.Printf("UPLOAD: receive %d's project %d, upload codes", metadata.UserId, metadata.ProjectId)
 		err = u.SaveCodes(fpath, metadata)
 	}
 	if err != nil {
@@ -81,7 +82,7 @@ func (u *Uploader) doUpload(stream pb_gen.MSLocal_UploadServer) error {
 		log.Printf("cannot send response: err=[%v]", err)
 		return err
 	}
-	log.Printf("doupload finished.")
+	log.Printf("UPLOAD: finished.")
 	return nil
 }
 
@@ -89,7 +90,7 @@ func (u *Uploader) receiveStream(stream pb_gen.MSLocal_UploadServer, metadata *p
 	//fileInfo := metadata.GetFileInfo()
 	//log.Printf("file info %v", fileInfo)
 	//fo, err := os.CreateTemp(config.TempFilePath, fmt.Sprintf("temp_%s", fileInfo.GetFileName()))
-	fo, err := os.CreateTemp(config.TempFilePath, "temp_upload_")
+	fo, err := os.CreateTemp(config.Conf.TempFilePath, "temp_upload_")
 	if err != nil {
 		log.Printf("create temp file fail, err=[%v]", err)
 		return "", err
@@ -152,7 +153,7 @@ func (u *Uploader) SaveCodes(fpath string, metadata *pb_gen.UploadMetadata) erro
 	//delete old
 	DeleteCodes(metadata.ProjectId)
 
-	tempDir, err := os.MkdirTemp(config.TempFilePath, "extracted_upload")
+	tempDir, err := os.MkdirTemp(config.Conf.TempFilePath, "extracted_upload")
 	if err != nil {
 		log.Printf("create temp dir error, err=%v", err)
 		return err

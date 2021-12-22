@@ -18,16 +18,19 @@ func Delete(ctx context.Context, req *pb_gen.DeleteProjectRequest) (*pb_gen.Dele
 	//get
 
 	if req.FileType == pb_gen.FileType_project {
+		log.Println("DELETE: delete project")
 		err := DeleteProject(req.Pid)
 		if err != nil {
 			return nil, err
 		}
 	} else if req.FileType == pb_gen.FileType_binary {
+		log.Println("DELETE: delete binary")
 		err := DeleteBinary(req.Pid)
 		if err != nil {
 			return nil, err
 		}
 	} else if req.FileType == pb_gen.FileType_codes {
+		log.Println("DELETE: delete codes")
 		err := DeleteCodes(req.Pid)
 		if err != nil {
 			return nil, err
@@ -44,7 +47,7 @@ func Delete(ctx context.Context, req *pb_gen.DeleteProjectRequest) (*pb_gen.Dele
 	//	log.Print("deadline is exceeded")
 	//	return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	//}
-
+	log.Printf("DELETE: finish!")
 	return &pb_gen.DeleteProjectResponse{
 		Message: "success",
 	}, nil
@@ -76,6 +79,7 @@ func DeleteProject(pid uint64) error {
 	if err != nil {
 		return err
 	}
+	log.Println("DELETE: delete project success")
 	return nil
 }
 
@@ -99,7 +103,7 @@ func DeleteBinary(pid uint64) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("delete %d binary success", pid)
+	log.Println("DELETE: delete %d binary success", pid)
 	return nil
 }
 
@@ -123,6 +127,6 @@ func DeleteCodes(pid uint64) error {
 		return err
 	}
 
-	log.Printf("delete %d code success", pid)
+	log.Println("DELETE: delete %d code success", pid)
 	return nil
 }

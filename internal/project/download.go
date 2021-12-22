@@ -25,15 +25,19 @@ func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer)
 	var err error
 	var fminfo *pb_gen.FileInfo
 	if req.FileType == pb_gen.FileType_binary {
+		log.Println("DOWNLOAD: download binary file")
 		fpath, fminfo, err = DownloadBinary(req.FileId, "")
-	} else if req.FileType == pb_gen.FileType_code_dir||req.FileType == pb_gen.FileType_code_file {//查看单个code内容
+	} else if req.FileType == pb_gen.FileType_code_file {//查看单个code内容
+		log.Println("DOWNLOAD: download single code")
 		fpath, fminfo, err = DownloadCode(req.FileId, "")
 	} else if req.FileType == pb_gen.FileType_project {
+		log.Println("DOWNLOAD: download project")
 		fpath, fminfo, err = DownloadProject(req.ProjectId)
 	} else if req.FileType == pb_gen.FileType_codes {
+		log.Println("DOWNLOAD: download all codes")
 		fpath, fminfo, err = DownloadCodes(req.FileId, "")
 	} else {
-		log.Printf("download unrecognized file type")
+		log.Println("download unrecognized file type")
 		return status.Errorf(codes.InvalidArgument, "download unrecognized file type")
 	}
 	if err != nil {
@@ -62,6 +66,7 @@ func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer)
 	if err != nil {
 		return err
 	}
+	log.Println("DOWNLOAD: download done")
 	return nil
 }
 
@@ -95,13 +100,12 @@ func SendStream(fpath string, stream pb_gen.MSLocal_DownloadServer) error {
 			return err
 		}
 	}
-	log.Printf("send file done")
+	log.Printf("DOWNLOAD: send file done")
 	return nil
 }
 
 func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	//search file
-
 	binaryfile, err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(fid))
 	if err != nil {
 		return "", nil, err
@@ -109,7 +113,7 @@ func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) 
 	var fo *os.File
 
 	if fpath == "" {
-		fo, err = os.CreateTemp(config.TempFilePath, "temp_dbin_")
+		fo, err = os.CreateTemp(config.Conf.TempFilePath, "temp_dbin_")
 	} else {
 		fo, err = os.Create(filepath.Join(fpath, binaryfile.FileName))
 	}
@@ -148,7 +152,7 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	if codefile.FileType == 0 { //dir
 		var cdir string
 		if fpath == "" {
-			cdir, err = os.MkdirTemp(config.TempFilePath, "temp_dcode_")
+			cdir, err = os.MkdirTemp(config.Conf.TempFilePath, "temp_dcode_")
 		} else {
 			cdir = filepath.Join(fpath, codefile.FileName)
 			err = os.Mkdir(cdir, os.ModePerm)
@@ -165,13 +169,13 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 				return "", nil, err
 			}
 		}
-		log.Printf("download code dir(%s) usccess", codefile.FileName)
+		log.Printf("download code dir(%s) success", codefile.FileName)
 		fminfo.FileType = pb_gen.FileType_code_dir
 		return cdir, fminfo, nil
 	} else if codefile.FileType == 1 { //file
 		var fo *os.File
 		if fpath == "" {
-			fo, err = os.CreateTemp(config.TempFilePath, "temp_dcode_")
+			fo, err = os.CreateTemp(config.Conf.TempFilePath, "temp_dcode_")
 		} else {
 			fo, err = os.Create(filepath.Join(fpath, codefile.FileName))
 		}
@@ -200,7 +204,7 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 
 func DownloadCodes(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	if fpath == "" {
-		dir, err := os.MkdirTemp(config.TempFilePath, "temp_dcodes_")
+		dir, err := os.MkdirTemp(config.Conf.TempFilePath, "temp_dcodes_")
 		if err != nil {
 			log.Printf("create temp dir error, err=[%v]", err)
 			return "", nil, err
@@ -228,7 +232,7 @@ func DownloadCodes(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 }
 
 func DownloadProject(pid uint64) (string, *pb_gen.FileInfo, error) {
-	tempDir, err := os.MkdirTemp(config.TempFilePath, "download_tempdir_")
+	tempDir, err := os.MkdirTemp(config.Conf.TempFilePath, "download_tempdir_")
 	if err != nil {
 		log.Printf("create temp dir error, err=%v", err)
 		return "", nil, err

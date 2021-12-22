@@ -43,6 +43,7 @@ func MustRegisterGRPCServer(server *grpc.Server) {
 	//	return
 	//}
 	r := NewConsulRegister()
+	log.Printf("register info is\n:%v", r)
 	for {
 		start := time.Now()
 		err := r.Register()
@@ -67,8 +68,8 @@ func (r *Register) Register() error {
 		return err
 	}
 	var IP string
-	if config.Conf.GetEnv() == config.DevEnv {
-		IP = fmt.Sprintf("%s:%d", config.Conf.Host, config.Conf.Port)
+	if config.GetEnv() == config.DevEnv {
+		IP = fmt.Sprintf("%s", config.Conf.Host)
 	} else {
 		IP = LocalIP()
 	}
@@ -79,7 +80,7 @@ func (r *Register) Register() error {
 		Name:    r.Name,                                      // 服务名称
 		Tags:    r.Tag,                                       // tag，可以为空
 		Port:    r.Port,                                      // 服务端口
-		Address: config.Conf.Host,                                          // 服务 IP
+		Address: IP,                                          // 服务 IP
 		Check: &api.AgentServiceCheck{ // 健康检查
 			Interval:                       r.Interval.String(),                         // 健康检查间隔
 			GRPC:                           fmt.Sprintf("%v:%v/%v", IP, r.Port, r.Name), // grpc 支持，执行健康检查的地址，service 会传到 Health.Check 函数中

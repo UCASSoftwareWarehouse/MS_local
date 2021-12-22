@@ -45,7 +45,7 @@ func (cli *LocalClient) Download(fid string, uid uint64, fileType pb_gen.FileTyp
 }
 
 func (cli *LocalClient) receiveStream(stream pb_gen.MSLocal_DownloadClient, metadata *pb_gen.DownloadMetadate) (string, error) {
-	fo, err := os.CreateTemp(config.TempFilePath, "temp_download_")
+	fo, err := os.CreateTemp(config.Conf.TempFilePath, "temp_download_")
 	if err != nil {
 		log.Printf("create temp file fail, err=[%v]", err)
 		return "", err

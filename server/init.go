@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"runtime"
 )
 
 func StartServe() {
@@ -22,10 +23,10 @@ func StartServe() {
 	var options []grpc.ServerOption
 	options = append(options, grpc.MaxSendMsgSize(5*1024*1024*1024*1024), grpc.MaxRecvMsgSize(5*1024*1024*1024*1024))
 	grpcServer := grpc.NewServer(options...)
-	//if runtime.GOOS == "linux" {
-	//	consul.MustRegisterGRPCServer(grpcServer) //注册微服务
-	//}
-	consul.MustRegisterGRPCServer(grpcServer)
+	if runtime.GOOS == "linux" {
+		consul.MustRegisterGRPCServer(grpcServer) //注册微服务
+	}
+	//consul.MustRegisterGRPCServer(grpcServer)
 	pb_gen.RegisterMSLocalServer(grpcServer, routes.NewMSLocalServer())
 	log.Printf("%s ready to server at %s...", appName, addr)
 	err = grpcServer.Serve(lis)

@@ -10,6 +10,7 @@ import (
 )
 
 func SearchProject(req *pb_gen.SearchProjectRequest, stream pb_gen.MSLocal_SearchProjectServer) error {
+	log.Println("SearchProject: start")
 	var pros []model.Project
 	if req.KeyWord == "" {
 		err := project.GetLimitProjects(mysql.Mysql, int(req.Limit), int(req.Page), &pros)
@@ -47,5 +48,6 @@ func SearchProject(req *pb_gen.SearchProjectRequest, stream pb_gen.MSLocal_Searc
 		}
 		log.Printf("send %d project", i)
 	}
+	log.Println("SearchProject: finish")
 	return nil
 }

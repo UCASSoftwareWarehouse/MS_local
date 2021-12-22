@@ -15,6 +15,7 @@ import (
 )
 
 func GetUserProjects(req *pb_gen.GetUserProjectsRequest, stream pb_gen.MSLocal_GetUserProjectsServer) error {
+	log.Println("GetUserProjects: get user's all project started")
 	var pros []model.Project
 
 	err := project.GetProjectsByUserId(mysql.Mysql, req.Uid, int(req.Limit), int(req.Page), &pros)
@@ -48,16 +49,19 @@ func GetUserProjects(req *pb_gen.GetUserProjectsRequest, stream pb_gen.MSLocal_G
 		}
 		log.Printf("send %d project", i)
 	}
+	log.Println("GetUserProjects: get user's all project finish")
 	return nil
 
 }
 
 func GetProject(ctx context.Context, req *pb_gen.GetProjectRequest) (*pb_gen.GetProjectResponse, error) {
+	log.Println("GetProject: get project info started")
 	pid := req.Pid
 	pro, err := project.GetProjectById(mysql.Mysql, pid)
 	if err != nil {
 		return nil, err
 	}
+	log.Println("GetProject: get project info finished")
 	return &pb_gen.GetProjectResponse{
 		ProjectInfo: &pb_gen.Project{
 			Id:                 pid,
@@ -75,6 +79,7 @@ func GetProject(ctx context.Context, req *pb_gen.GetProjectRequest) (*pb_gen.Get
 }
 
 func GetCodes(req *pb_gen.GetCodesRequest, stream pb_gen.MSLocal_GetCodesServer) error {
+	log.Println("GetCodes: get codes file list start")
 	finfo, err := code.GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(req.Fid))
 	if err != nil {
 		return err
@@ -102,7 +107,8 @@ func GetCodes(req *pb_gen.GetCodesRequest, stream pb_gen.MSLocal_GetCodesServer)
 			}
 		}
 	}
-	//get code content todo
+
+	log.Println("GetCodes: get codes file list finish")
 	return nil
 
 }

@@ -29,7 +29,7 @@ func TestDownloadBinary(t *testing.T) {
 	mysql.InitMysql()
 	fid := "61add42e3e24c4b998841475"
 
-	fpath, _, err := DownloadBinary(fid, filepath.Join(config.TempFilePath, "download"))
+	fpath, _, err := DownloadBinary(fid, filepath.Join(config.Conf.TempFilePath, "download"))
 	if err != nil {
 		t.Error("download binary failed")
 	}
@@ -42,7 +42,7 @@ func TestDownloadCode(t *testing.T) {
 	mysql.InitMysql()
 	fid := "61add4653e24c4b99884148a"
 
-	fpath, _, err := DownloadCode(fid, filepath.Join(config.TempFilePath, "download"))
+	fpath, _, err := DownloadCode(fid, filepath.Join(config.Conf.TempFilePath, "download"))
 	if err != nil {
 		t.Error("download codes failed")
 	}

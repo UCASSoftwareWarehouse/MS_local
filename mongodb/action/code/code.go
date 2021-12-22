@@ -58,7 +58,7 @@ func GetCodeByFileId(ctx context.Context, collection *mongo.Collection, id primi
 		log.Printf("get code by file id error, err=[%v]", err)
 		return nil, err
 	}
-	log.Println("code FindOne: ", code.FileName)
+	//log.Println("code FindOne: ", code.FileName)
 	return code, err
 }
 

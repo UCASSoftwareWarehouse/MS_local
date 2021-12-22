@@ -12,9 +12,9 @@ func InitConfig() {
 
 func InitConfigDefault() {
 	//相对路径
-	c := Parse(DefaultConfigFilepath)
+	c := Parse("")
 	//判断是否是 linux
-	env := Conf.GetEnv()
+	env := GetEnv()
 	Conf = c[env]
 	log.Printf("InitConfigDefault %+v", Conf)
 }

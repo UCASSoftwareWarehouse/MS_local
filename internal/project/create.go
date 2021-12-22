@@ -15,6 +15,7 @@ import (
 
 //是否查重
 func CreateProject(ctx context.Context, req *pb_gen.CreateProjectRequest) (*pb_gen.CreateProjectResponse, error) {
+	log.Println("CreateProject: start create a project")
 	if len(req.ProjectName) == 0 {
 		log.Printf("project name must be set")
 		return nil, status.Errorf(codes.InvalidArgument, "project name can not be empty")
@@ -37,7 +38,7 @@ func CreateProject(ctx context.Context, req *pb_gen.CreateProjectRequest) (*pb_g
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("create project %s for user %d success!", req.ProjectName, req.UserId)
+	log.Println("CreateProject: create project %s for user %d success!", req.ProjectName, req.UserId)
 
 	return &pb_gen.CreateProjectResponse{
 		ProjectInfo: &pb_gen.Project{

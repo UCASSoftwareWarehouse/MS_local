@@ -14,7 +14,7 @@ func Zip(srcFile string, destZip string) (string, error) {
 	var zipfile *os.File
 	var err error
 	if destZip == "" {
-		zipfile, err = os.CreateTemp(config.TempFilePath, "dzip_")
+		zipfile, err = os.CreateTemp(config.Conf.TempFilePath, "dzip_")
 	} else {
 		zipfile, err = os.Create(destZip)
 	}

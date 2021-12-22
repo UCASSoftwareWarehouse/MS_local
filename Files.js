@@ -1,7 +1,7 @@
 //https://www.w3schools.com/nodejs/nodejs_mongodb.asp
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/Files";
+var url = "mongodb://admin:123456@133.133.135.42:27017/Files";
 //create database
 MongoClient.connect(url, function(err, db) {
     if (err) throw err;
@@ -10,7 +10,7 @@ MongoClient.connect(url, function(err, db) {
 });
 
 // create collection
-var url1 = "mongodb://localhost:27017"
+var url1 = "mongodb://admin:123456@133.133.135.42:27017"
 MongoClient.connect(url1, function(err, db) {
     if (err) throw err;
     var dbo = db.db("Files");

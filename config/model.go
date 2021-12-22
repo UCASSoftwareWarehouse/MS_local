@@ -22,6 +22,7 @@ type EachConfig struct {
 	Port             int    `yaml:"port"`
 	ConsulAddr       string `yaml:"consul_addr"`
 	NetworkInterface string `yaml:"network_interface"`
+	TempFilePath     string `yaml:"temp_file_path"`
 	MongodbAddr      string `yaml:"mongodb_addr"`
 	MongodbUser      string `yaml:"mongodb_user"`
 	MongodbPwd       string `yaml:"mongodb_pwd"`
@@ -34,12 +35,7 @@ type EachConfig struct {
 	MysqlDb          string `yaml:"mysql_db"`
 }
 
-const (
-	//DefaultConfigFilepath = "./config.yml"
-	DefaultConfigFilepath = "D:\\GolangProjects\\src\\MS_Local\\config.yml"
-)
-
-func (c *EachConfig) GetEnv() ConfigurationEnv {
+func GetEnv() ConfigurationEnv {
 	log.Printf("RUNNING ON %s\n", runtime.GOOS)
 	if runtime.GOOS == "linux" {
 		return PrdEnv
@@ -49,10 +45,12 @@ func (c *EachConfig) GetEnv() ConfigurationEnv {
 }
 
 func Parse(configFilepath string) Configuration {
-	println()
-	if configFilepath == "" {
-		configFilepath = DefaultConfigFilepath
+	if GetEnv() == PrdEnv {
+		configFilepath = "./config.yml"
+	} else {
+		configFilepath = "D:\\GolangProjects\\src\\MS_Local\\config.yml"
 	}
+	log.Printf("config in %v", configFilepath)
 	bs, err := ioutil.ReadFile(configFilepath)
 	if err != nil {
 		log.Printf("ConfigForEnv parse failed, read file failed, err=[%v]", err)

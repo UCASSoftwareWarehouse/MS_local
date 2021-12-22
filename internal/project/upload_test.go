@@ -55,6 +55,7 @@ func TestUploader_SaveCodes(t *testing.T) {
 }
 
 func TestUpload(t *testing.T) {
+	config.InitConfig()
 	conn := client.InitMSLocalClient()
 	defer conn.Close()
 	cli := project.NewLocalClient(conn)

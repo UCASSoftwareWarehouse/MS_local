@@ -12,8 +12,6 @@ CREATE TABLE IF NOT EXISTS user
     password  CHAR(32)     NOT NULL
 );
 
-
-
 CREATE TABLE IF NOT EXISTS project
 (
     id                   BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -34,4 +32,6 @@ CREATE TABLE IF NOT EXISTS project
         on update cascade
         on delete cascade
 );
+
+INSERT INTO user VALUES ('admin', '123456')
 

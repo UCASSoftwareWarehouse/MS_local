@@ -28,7 +28,7 @@ func (cli *LocalClient) Upload(uid uint64, pid uint64, fpath string, fileType pb
 	}
 	defer file.Close()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
 
 	stream, err := cli.service.Upload(ctx)
