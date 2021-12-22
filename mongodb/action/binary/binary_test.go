@@ -22,7 +22,7 @@ func TestAddBinary(t *testing.T) {
 		ProjectID:  10,
 		FileSize:   16,
 		UpdateTime: mongodb2.Time2Timestamp(time.Now()),
-		Content:    []byte("hello mongodb"),
+		//Content:    []byte("hello mongodb"),
 	}
 	id, err := AddBinary(context.TODO(), mongodb.BinaryCol, &binary)
 	if err != nil {

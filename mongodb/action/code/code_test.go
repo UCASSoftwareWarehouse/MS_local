@@ -24,7 +24,7 @@ func TestAddCode(t *testing.T) {
 		FileType:   1,
 		FileSize:   16,
 		UpdateTime: mongodb2.Time2Timestamp(time.Now()),
-		Content:    []byte("hello mongodb"),
+		//Content:    []byte("hello mongodb"),
 	}
 	id, err := AddCode(context.Background(), mongodb.CodeCol, code)
 	if err != nil {

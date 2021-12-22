@@ -2,12 +2,15 @@ package project
 
 import (
 	"MS_Local/mongodb"
+	"MS_Local/mongodb/action"
 	"MS_Local/mongodb/action/binary"
 	code2 "MS_Local/mongodb/action/code"
+	model2 "MS_Local/mongodb/model"
 	"MS_Local/mysql"
 	"MS_Local/mysql/action/project"
 	"MS_Local/mysql/model"
 	"MS_Local/pb_gen"
+	mongodb2 "MS_Local/utils/mongodb"
 	"context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -69,7 +72,7 @@ func DeleteProject(pid uint64) error {
 	//delete codes
 	caddr := pro.CodeAddr
 	if caddr != "" {
-		err := code2.DeleteManyCodesByProjectId(context.Background(), mongodb.CodeCol, pro.ID)
+		err := DeleteCodes(pro.ID)
 		if err != nil {
 			return err
 		}
@@ -93,6 +96,12 @@ func DeleteBinary(pid uint64) error {
 	if pro.BinaryAddr == "" {
 		return nil
 	}
+	//delete content
+	binfo,err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(pro.BinaryAddr))
+	if binfo.ContentID!=""{
+		action.DeleteGridFile(binfo.ContentID)
+	}
+
 	//delete
 	err = binary.DeleteBinaryByProjectId(context.Background(), mongodb.BinaryCol, pid)
 	if err != nil {
@@ -116,7 +125,39 @@ func DeleteCodes(pid uint64) error {
 	if pro.CodeAddr == "" {
 		return nil
 	}
-	//delete
+
+	if pro.CodeAddr==""{
+		return nil;
+	}
+	//delete codes content
+	cinfo, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(pro.CodeAddr))
+	if err!=nil{
+		return err;
+	}
+	var queue []*model2.Code
+	queue = append(queue, cinfo)
+	for{
+		if(len(queue)==0){
+			break;
+		}
+		temp := queue[0]
+		queue = queue[1:len(queue)]
+		if(temp.FileType==0){//dir
+			for _, cid := range(temp.ChildFiles){
+				temp_cinfo, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, cid)
+				if err!=nil{
+					return err
+				}
+				queue = append(queue, temp_cinfo)
+			}
+		}else{
+			err := action.DeleteGridFile(temp.ContentID)
+			if err!=nil{
+				return err
+			}
+		}
+	}
+	//delete codes metadata
 	err = code2.DeleteManyCodesByProjectId(context.Background(), mongodb.CodeCol, pid)
 	if err != nil {
 		return err

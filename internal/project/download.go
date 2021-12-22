@@ -3,6 +3,7 @@ package project
 import (
 	"MS_Local/config"
 	"MS_Local/mongodb"
+	"MS_Local/mongodb/action"
 	"MS_Local/mongodb/action/binary"
 	code2 "MS_Local/mongodb/action/code"
 	"MS_Local/mysql"
@@ -27,7 +28,7 @@ func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer)
 	if req.FileType == pb_gen.FileType_binary {
 		log.Println("DOWNLOAD: download binary file")
 		fpath, fminfo, err = DownloadBinary(req.FileId, "")
-	} else if req.FileType == pb_gen.FileType_code_file {//查看单个code内容
+	} else if req.FileType == pb_gen.FileType_code_file { //查看单个code内容
 		log.Println("DOWNLOAD: download single code")
 		fpath, fminfo, err = DownloadCode(req.FileId, "")
 	} else if req.FileType == pb_gen.FileType_project {
@@ -111,34 +112,27 @@ func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) 
 		return "", nil, err
 	}
 	var fo *os.File
-
 	if fpath == "" {
 		fo, err = os.CreateTemp(config.Conf.TempFilePath, "temp_dbin_")
 	} else {
 		fo, err = os.Create(filepath.Join(fpath, binaryfile.FileName))
 	}
-
 	if err != nil {
 		log.Printf("create temp file fail, err=[%v]", err)
 		return "", nil, err
 	}
-	defer func() {
-		if err := fo.Close(); err != nil {
-			log.Printf("Upload close fo failed, err=[%+v]", err)
-		}
-	}()
-
-	_, err = fo.Write(binaryfile.Content)
+	temp_fpath := fo.Name()
+	fo.Close()
+	err = action.DownloadGridFile(temp_fpath, binaryfile.ContentID)
 	if err != nil {
-		log.Printf("wirte file error")
 		return "", nil, err
 	}
-	log.Printf("wirte binary to %v", fo.Name())
+	log.Printf("wirte binary to %v", temp_fpath)
 	fminfo := &pb_gen.FileInfo{
 		FileName: binaryfile.FileName,
 		FileType: pb_gen.FileType_binary,
 	}
-	return fo.Name(), fminfo, nil
+	return temp_fpath, fminfo, nil
 }
 
 func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
@@ -179,25 +173,19 @@ func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 		} else {
 			fo, err = os.Create(filepath.Join(fpath, codefile.FileName))
 		}
-
 		if err != nil {
 			log.Printf("create temp file fail, err=[%v]", err)
 			return "", nil, err
 		}
-		defer func() {
-			if err := fo.Close(); err != nil {
-				log.Printf("Upload close fo failed, err=[%+v]", err)
-			}
-		}()
-
-		_, err = fo.Write(codefile.Content)
+		temp_fpath := fo.Name()
+		fo.Close()
+		err = action.DownloadGridFile(temp_fpath, codefile.ContentID)
 		if err != nil {
-			log.Printf("wirte file error")
 			return "", nil, err
 		}
-		log.Printf("wirte code to %v", fo.Name())
+		log.Printf("wirte code to %v", temp_fpath)
 		fminfo.FileType = pb_gen.FileType_code_file
-		return fo.Name(), fminfo, err
+		return temp_fpath, fminfo, err
 	}
 	return "", nil, status.Errorf(codes.InvalidArgument, "no such filetype")
 }
@@ -219,7 +207,7 @@ func DownloadCodes(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 		if err != nil {
 			log.Printf("zip failed, err=[%v]", err)
 		}
-		fminfo.FileName = fminfo.FileName+".zip"
+		fminfo.FileName = fminfo.FileName + ".zip"
 		fminfo.FileType = pb_gen.FileType_codes
 		return zpath, fminfo, nil
 	} else { //download到指定文件夹
@@ -259,7 +247,7 @@ func DownloadProject(pid uint64) (string, *pb_gen.FileInfo, error) {
 		log.Printf("zip failed, err=[%v]", err)
 	}
 	fminfo := &pb_gen.FileInfo{
-		FileName: project.ProjectName+".zip",
+		FileName: project.ProjectName + ".zip",
 		FileType: pb_gen.FileType_project,
 	}
 	return fpath, fminfo, nil

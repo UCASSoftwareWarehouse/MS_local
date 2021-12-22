@@ -3,6 +3,7 @@ package project
 import (
 	"MS_Local/config"
 	"MS_Local/mongodb"
+	"MS_Local/mongodb/action"
 	"MS_Local/mongodb/action/binary"
 	"MS_Local/mongodb/action/code"
 	"MS_Local/mongodb/model"
@@ -221,11 +222,11 @@ func (u *Uploader) SaveDir(dirpath string, metadata *pb_gen.UploadMetadata) (*pr
 	}
 	//pb_gen.FileType_code_dir
 	temp_pid, err := code.AddCode(context.Background(), mongodb.CodeCol, &model.Code{
-		FileName:   dinfo.Name(),
+		FileName:   filepath.Base(dinfo.Name()),
 		ProjectID:  metadata.ProjectId,
 		FileType:   0, //dir
 		FileSize:   uint64(dinfo.Size()),
-		Content:    nil,
+		ContentID:    "",
 		UpdateTime: mongodb2.Time2Timestamp(dinfo.ModTime()),
 		ChildFiles: childFiles,
 	})
@@ -238,39 +239,48 @@ func (u *Uploader) SaveDir(dirpath string, metadata *pb_gen.UploadMetadata) (*pr
 
 // save binary/code file to mongodb
 func (u *Uploader) SaveFile(fpath string, metadata *pb_gen.UploadMetadata, filetype pb_gen.FileType) (*primitive.ObjectID, error) {
-	content, err := os.ReadFile(fpath)
-	if err != nil {
-		log.Printf("read temp file failed, %v", err)
-		return nil, err
-	}
-	finfo, _ := os.Stat(fpath)
+	//content, err := os.ReadFile(fpath)
+	//if err != nil {
+	//	log.Printf("read temp file failed, %v", err)
+	//	return nil, err
+	//}
+
+
 	var temp_id *primitive.ObjectID
 	if filetype == pb_gen.FileType_binary {
-		//binary　时间来自于包而不是来自于临时文件
 		bfile := new(model.Binary)
-
 		binfo := metadata.GetFileInfo() // binary file info come from request
+		contentId, err := action.UploadGridFile(fpath, binfo.FileName)
+		if(err!=nil){
+			return nil, err
+		}
+		bfile.ContentID = mongodb2.ObjectId2String(*contentId)
 		bfile.FileName = binfo.FileName
 		bfile.ProjectID = metadata.ProjectId
-		bfile.Content = content
+		//bfile.Content = content
 		temp_id, err = binary.AddBinary(context.Background(), mongodb.BinaryCol, bfile)
+		if err != nil {
+			return nil, err
+		}
+
 	} else if filetype == pb_gen.FileType_code_file {
 		//code file info come from file itself
+		finfo, _ := os.Stat(fpath)
+		contentId, err := action.UploadGridFile(fpath, finfo.Name())
+		if(err!=nil){
+			return nil, err
+		}
 		temp_id, err = code.AddCode(context.Background(), mongodb.CodeCol, &model.Code{
-			FileName:   finfo.Name(),
+			FileName:   filepath.Base(finfo.Name()),
 			ProjectID:  metadata.ProjectId,
 			FileSize:   uint64(finfo.Size()),
 			FileType:   1, //code file
 			UpdateTime: mongodb2.Time2Timestamp(finfo.ModTime()),
-			Content:    content,
+			ContentID: mongodb2.ObjectId2String(*contentId),
 		})
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	if err != nil {
-		//log.Printf("add file to database failed: %v, filetype: %v", err, filetype)
-		return nil, err
-	}
-	log.Printf("add file(%s) to mongodb success", finfo.Name())
-
 	return temp_id, nil
 }

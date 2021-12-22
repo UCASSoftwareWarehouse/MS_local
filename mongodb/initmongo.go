@@ -15,6 +15,7 @@ import (
 var Softwaredb *mongo.Database
 var BinaryCol *mongo.Collection
 var CodeCol *mongo.Collection
+var GridFS *mongo.Database
 
 func InitMongo() error {
 	log.Printf("init mongo...")
@@ -37,9 +38,9 @@ func InitMongo() error {
 	if err = client.Ping(ctx, readpref.Primary()); err != nil {
 		log.Fatal("ping error", err)
 	}
-	db := client.Database("Files")
-	Softwaredb = db
-	initCollection(db)
+	Softwaredb = client.Database("Files")
+	GridFS = client.Database("GridFS")
+	initCollection(Softwaredb)
 	return err
 }
 
