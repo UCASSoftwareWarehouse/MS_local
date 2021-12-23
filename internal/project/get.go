@@ -10,8 +10,9 @@ import (
 	"MS_Local/utils"
 	mongodb2 "MS_Local/utils/mongodb"
 	"context"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func GetUserProjects(req *pb_gen.GetUserProjectsRequest, stream pb_gen.MSLocal_GetUserProjectsServer) error {
@@ -80,7 +81,11 @@ func GetProject(ctx context.Context, req *pb_gen.GetProjectRequest) (*pb_gen.Get
 
 func GetCodes(req *pb_gen.GetCodesRequest, stream pb_gen.MSLocal_GetCodesServer) error {
 	log.Println("GetCodes: get codes file list start")
-	finfo, err := code.GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(req.Fid))
+	tmp_id, err := mongodb2.String2ObjectId(req.Fid)
+	if err != nil {
+		return err
+	}
+	finfo, err := code.GetCodeByFileId(context.Background(), mongodb.CodeCol, tmp_id)
 	if err != nil {
 		return err
 	}

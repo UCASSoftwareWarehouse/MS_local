@@ -12,9 +12,10 @@ import (
 	"MS_Local/pb_gen"
 	mongodb2 "MS_Local/utils/mongodb"
 	"context"
+	"log"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"log"
 )
 
 func Delete(ctx context.Context, req *pb_gen.DeleteProjectRequest) (*pb_gen.DeleteProjectResponse, error) {
@@ -96,9 +97,13 @@ func DeleteBinary(pid uint64) error {
 	if pro.BinaryAddr == "" {
 		return nil
 	}
+	tmp_id, err := mongodb2.String2ObjectId(pro.BinaryAddr)
+	if err != nil {
+		return err
+	}
 	//delete content
-	binfo,err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(pro.BinaryAddr))
-	if binfo.ContentID!=""{
+	binfo, err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, tmp_id)
+	if binfo.ContentID != "" {
 		action.DeleteGridFile(binfo.ContentID)
 	}
 
@@ -126,33 +131,37 @@ func DeleteCodes(pid uint64) error {
 		return nil
 	}
 
-	if pro.CodeAddr==""{
-		return nil;
+	if pro.CodeAddr == "" {
+		return nil
+	}
+	tmp_id, err := mongodb2.String2ObjectId(pro.CodeAddr)
+	if err != nil {
+		return err
 	}
 	//delete codes content
-	cinfo, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(pro.CodeAddr))
-	if err!=nil{
-		return err;
+	cinfo, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, tmp_id)
+	if err != nil {
+		return err
 	}
 	var queue []*model2.Code
 	queue = append(queue, cinfo)
-	for{
-		if(len(queue)==0){
-			break;
+	for {
+		if len(queue) == 0 {
+			break
 		}
 		temp := queue[0]
 		queue = queue[1:len(queue)]
-		if(temp.FileType==0){//dir
-			for _, cid := range(temp.ChildFiles){
+		if temp.FileType == 0 { //dir
+			for _, cid := range temp.ChildFiles {
 				temp_cinfo, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, cid)
-				if err!=nil{
+				if err != nil {
 					return err
 				}
 				queue = append(queue, temp_cinfo)
 			}
-		}else{
+		} else {
 			err := action.DeleteGridFile(temp.ContentID)
-			if err!=nil{
+			if err != nil {
 				return err
 			}
 		}

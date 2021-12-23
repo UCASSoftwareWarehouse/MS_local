@@ -1,8 +1,9 @@
 package mongodb
 
 import (
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 //https://studygolang.com/articles/2552
@@ -13,7 +14,8 @@ func Struct2Bson(v interface{}) *bson.D {
 	data, err := bson.Marshal(v)
 	//fmt.Println("%q", data)
 	if err != nil {
-		log.Fatal("strcut to bson error", err)
+		log.Println("strcut to bson error", err)
+		return nil
 	}
 	//var doc bson.D
 	doc := new(bson.D)

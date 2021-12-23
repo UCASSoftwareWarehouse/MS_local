@@ -5,19 +5,20 @@ import (
 	mongodb2 "MS_Local/utils/mongodb"
 	"bytes"
 	"context"
+	"io/ioutil"
+	"log"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/gridfs"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"io/ioutil"
-	"log"
 )
 
-func UploadGridFile(file, filename string) (*primitive.ObjectID, error){
+func UploadGridFile(file, filename string) (*primitive.ObjectID, error) {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
-		log.Printf("open file error, err=[%v]",err)
-		return  nil, err
+		log.Printf("open file error, err=[%v]", err)
+		return nil, err
 	}
 	bucket, err := gridfs.NewBucket(
 		mongodb.GridFS,
@@ -40,13 +41,16 @@ func UploadGridFile(file, filename string) (*primitive.ObjectID, error){
 		log.Printf("write file to gridfs error, err=[%v]", err)
 		return nil, err
 	}
-	log.Printf("Write file %s to GRIDFS was successful. File size: %d b\n",filename, fileSize)
+	log.Printf("Write file %s to GRIDFS was successful. File size: %d b\n", filename, fileSize)
 	fid := uploadStream.FileID.(primitive.ObjectID)
 	return &fid, nil
 }
 
-func DownloadGridFile(fname string ,   id string) error{
-	oid := mongodb2.String2ObjectId(id)
+func DownloadGridFile(fname string, id string) error {
+	oid, err := mongodb2.String2ObjectId(id)
+	if err != nil {
+		return err
+	}
 	bucket, _ := gridfs.NewBucket(
 		mongodb.GridFS,
 	)
@@ -62,10 +66,13 @@ func DownloadGridFile(fname string ,   id string) error{
 
 }
 
-
-func DeleteGridFile(id string)error{
+func DeleteGridFile(id string) error {
 	fsFiles := mongodb.GridFS.Collection("fs.files")
-	filter := bson.M{"_id":mongodb2.String2ObjectId(id)}
+	tmp_id, err := mongodb2.String2ObjectId(id)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": tmp_id}
 	opts := options.Delete().SetCollation(&options.Collation{
 		Locale:    "en_US",
 		Strength:  1,

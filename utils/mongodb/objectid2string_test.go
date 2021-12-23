@@ -1,9 +1,10 @@
 package mongodb
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"testing"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TestObjectId2String(t *testing.T) {
@@ -13,5 +14,5 @@ func TestObjectId2String(t *testing.T) {
 	string_id := ObjectId2String(temp_id)
 	log.Println(string_id)
 	log.Println(len(string_id))
-	log.Println(String2ObjectId(string_id))
+	// log.Println(String2ObjectId(string_id))
 }

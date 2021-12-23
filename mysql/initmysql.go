@@ -3,8 +3,9 @@ package mysql
 import (
 	"MS_Local/config"
 	"fmt"
-	"gorm.io/driver/mysql"
 	"log"
+
+	"gorm.io/driver/mysql"
 
 	//"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,8 +32,8 @@ func InitMysql() error {
 
 	DB, err := gorm.Open(mysql.New(config), &gorm.Config{})
 	if err != nil {
-		//log.Fatal("open mysql failed, err =[%s]", err)
-		log.Fatal("test")
+		log.Fatal("open mysql failed, err =[%s]", err)
+		// log.Fatal("test")
 	}
 	Mysql = DB
 

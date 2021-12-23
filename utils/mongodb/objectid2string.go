@@ -5,12 +5,13 @@ import (
 	"log"
 )
 
-func String2ObjectId(s string) primitive.ObjectID {
+func String2ObjectId(s string) (primitive.ObjectID, error) {
 	objId, err := primitive.ObjectIDFromHex(s)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("string %s to object id error, err=[%v]",s, err)
+		return primitive.NilObjectID, err
 	}
-	return objId
+	return objId,nil
 }
 
 func ObjectId2String(id primitive.ObjectID) string {

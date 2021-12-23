@@ -84,7 +84,11 @@ func TestGetBinaryByFileId(t *testing.T) {
 	config.InitConfig()
 	mongodb.InitMongo()
 	var stringid = "619d2218e9f25f10df00a109"
-	binary, err := GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(stringid))
+	tmp_id, err := mongodb2.String2ObjectId(stringid)
+	if err != nil {
+		t.Error(err)
+	}
+	binary, err := GetBinaryByFileId(context.Background(), mongodb.BinaryCol, tmp_id)
 	if err != nil {
 		t.Errorf("test get codefile by file id")
 	}
@@ -119,7 +123,11 @@ func TestDeleteOneBinaryByFileId(t *testing.T) {
 	config.InitConfig()
 	mongodb.InitMongo()
 	var stringid = "619dda3a215c2f4ed65ff317"
-	err := DeleteOneBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(stringid))
+	tmp_id, err := mongodb2.String2ObjectId(stringid)
+	if err != nil {
+		t.Error(err)
+	}
+	err = DeleteOneBinaryByFileId(context.Background(), mongodb.BinaryCol, tmp_id)
 	if err != nil {
 		t.Errorf("test delete one codefile failed")
 	}

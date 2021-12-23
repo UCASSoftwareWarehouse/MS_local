@@ -86,7 +86,11 @@ func TestGetCodeByFileId(t *testing.T) {
 	config.InitConfig()
 	mongodb.InitMongo()
 	var stringid = "619ddde40b7639bceaa6cab1"
-	code, err := GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(stringid))
+	tmp_id, err := mongodb2.String2ObjectId(stringid)
+	if err != nil {
+		t.Error(err)
+	}
+	code, err := GetCodeByFileId(context.Background(), mongodb.CodeCol, tmp_id)
 	if err != nil {
 		t.Errorf("test get code by file id")
 	}
@@ -121,7 +125,11 @@ func TestDeleteOneCodeByFileId(t *testing.T) {
 	config.InitConfig()
 	mongodb.InitMongo()
 	var stringid = "619ddde40b7639bceaa6cab1"
-	err := DeleteOneCodeByFileId(context.Background(), *mongodb.CodeCol, mongodb2.String2ObjectId(stringid))
+	tmp_id, err := mongodb2.String2ObjectId(stringid)
+	if err != nil {
+		t.Error(err)
+	}
+	err = DeleteOneCodeByFileId(context.Background(), *mongodb.CodeCol, tmp_id)
 
 	if err != nil {
 		t.Errorf("test delete one code failed")

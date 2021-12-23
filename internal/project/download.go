@@ -13,12 +13,13 @@ import (
 	mongodb2 "MS_Local/utils/mongodb"
 	"bufio"
 	"context"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func Download(req *pb_gen.DownloadRequest, stream pb_gen.MSLocal_DownloadServer) error {
@@ -107,7 +108,11 @@ func SendStream(fpath string, stream pb_gen.MSLocal_DownloadServer) error {
 
 func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
 	//search file
-	binaryfile, err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, mongodb2.String2ObjectId(fid))
+	tmp_id, err := mongodb2.String2ObjectId(fid)
+	if err != nil {
+		return "", nil, err
+	}
+	binaryfile, err := binary.GetBinaryByFileId(context.Background(), mongodb.BinaryCol, tmp_id)
 	if err != nil {
 		return "", nil, err
 	}
@@ -136,7 +141,11 @@ func DownloadBinary(fid string, fpath string) (string, *pb_gen.FileInfo, error) 
 }
 
 func DownloadCode(fid string, fpath string) (string, *pb_gen.FileInfo, error) {
-	codefile, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, mongodb2.String2ObjectId(fid))
+	tmp_id, err := mongodb2.String2ObjectId(fid)
+	if err != nil {
+		return "", nil, err
+	}
+	codefile, err := code2.GetCodeByFileId(context.Background(), mongodb.CodeCol, tmp_id)
 	if err != nil {
 		return "", nil, err
 	}

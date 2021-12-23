@@ -8,7 +8,7 @@ import (
 func String2Uint64(s string) uint64 {
 	res, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
-		log.Printf("string to uint64 fail, err=[%v]", err)
+		log.Printf("string %s to uint64 fail, err=[%v]", s,err)
 	}
 	return res
 }
