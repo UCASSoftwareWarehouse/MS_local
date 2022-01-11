@@ -82,7 +82,7 @@ func SearchProjectByName(db *gorm.DB, keyword string, limit int, page int, class
 	//filter := db.Limit(limit).Where("project_name LIKE ?", pattern).Offset(offset)
 	//err := filter.Find(projects).Error
 
-	dislimit := 10
+	dislimit := 5
 	query := fmt.Sprintf("levenshtein(%s,?)<?", model.ProjectColumns.ProjectName)
 
 	osValue := utils.GetOSValue(classier)

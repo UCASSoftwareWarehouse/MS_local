@@ -117,7 +117,7 @@ func DeleteBinary(pid uint64) error {
 	if err != nil {
 		return err
 	}
-	log.Println("DELETE: delete %d binary success", pid)
+	log.Printf("DELETE: delete %d binary success", pid)
 	return nil
 }
 
@@ -177,6 +177,6 @@ func DeleteCodes(pid uint64) error {
 		return err
 	}
 
-	log.Println("DELETE: delete %d code success", pid)
+	log.Printf("DELETE: delete %d code success", pid)
 	return nil
 }

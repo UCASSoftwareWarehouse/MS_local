@@ -90,7 +90,10 @@ func GetCodes(req *pb_gen.GetCodesRequest, stream pb_gen.MSLocal_GetCodesServer)
 		return err
 	}
 	if finfo.FileType == 0 { //list dir file
-		for _, fid := range finfo.ChildFiles {
+		start := int((req.Page-1)*req.Limit)
+		end := int(req.Page * req.Limit)
+		for ;start<end && start<len(finfo.ChildFiles);start+=1{
+			fid := finfo.ChildFiles[start]
 			cinfo, err := code.GetCodeByFileId(context.Background(), mongodb.CodeCol, fid)
 			if err != nil {
 				return err
@@ -112,7 +115,6 @@ func GetCodes(req *pb_gen.GetCodesRequest, stream pb_gen.MSLocal_GetCodesServer)
 			}
 		}
 	}
-
 	log.Println("GetCodes: get codes file list finish")
 	return nil
 

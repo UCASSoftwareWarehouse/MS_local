@@ -40,7 +40,7 @@ func TestDownloadCode(t *testing.T) {
 	config.InitConfig()
 	mongodb.InitMongo()
 	mysql.InitMysql()
-	fid := "61add4653e24c4b99884148a"
+	fid := "61c3e55a82a514332aee5601"
 
 	fpath, _, err := DownloadCode(fid, filepath.Join(config.Conf.TempFilePath, "download"))
 	if err != nil {

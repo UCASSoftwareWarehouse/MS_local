@@ -38,7 +38,7 @@ func CreateProject(ctx context.Context, req *pb_gen.CreateProjectRequest) (*pb_g
 	if err != nil {
 		return nil, err
 	}
-	log.Println("CreateProject: create project %s for user %d success!", req.ProjectName, req.UserId)
+	log.Printf("CreateProject: create project %s for user %d success!", req.ProjectName, req.UserId)
 
 	return &pb_gen.CreateProjectResponse{
 		ProjectInfo: &pb_gen.Project{

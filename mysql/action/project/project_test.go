@@ -114,8 +114,8 @@ func TestSearchProjectByName(t *testing.T) {
 	config.InitConfig()
 	mysql.InitMysql()
 	var projects []model.Project
-	classifier := utils.GetClassifier(0, 1, 1, 0)
-	err := SearchProjectByName(mysql.Mysql, "ject", 10, 1, classifier, &projects)
+	classifier := utils.GetClassifier(0, 0, 0, 0)
+	err := SearchProjectByName(mysql.Mysql, "project", 10, 1, classifier, &projects)
 	if err != nil {
 		t.Errorf("err=[%v]", err)
 	}

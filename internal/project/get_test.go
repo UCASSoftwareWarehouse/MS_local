@@ -14,7 +14,7 @@ func TestGetProject(t *testing.T) {
 	cli := project.NewLocalClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	err := cli.GetProject(ctx, 1, 4, 2)
+	err := cli.GetProject(ctx, 1, 2, 2)
 	if err != nil {
 		t.Errorf("client download failed, err=[%v]", err)
 	}
@@ -26,7 +26,7 @@ func TestGetCodes(t *testing.T) {
 	cli := project.NewLocalClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	err := cli.GetCodes(ctx, 1, 2, "61add4653e24c4b99884148a", 1, 50)
+	err := cli.GetCodes(ctx, 1, 2, "61c3651140baa5895b598824", 1, 5)
 	if err != nil {
 		t.Errorf("client download failed, err=[%v]", err)
 	}
